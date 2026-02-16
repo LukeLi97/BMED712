@@ -10,6 +10,17 @@
 | uturn | 6.000 | 0.500 | LR | 0.932 | 0.907 |
 
 
+### RF: Time vs Time+Frequency (best per phase)
+| phase | time_bacc | time_win_s | time_overlap | timefreq_bacc | timefreq_win_s | timefreq_overlap |
+| --- | --- | --- | --- | --- | --- | --- |
+| pre_uturn | 0.900 | 4.000 | 0.250 | 0.738 | 4.000 | 0.250 |
+| post_uturn | 0.890 | 4.000 | 0.250 | 0.784 | 5.000 | 0.250 |
+| gait_full | 0.891 | 3.000 | 0.500 | 0.757 | 5.000 | 0.250 |
+| uturn | 0.600 | 3.000 | 0.250 | 0.932 | 6.000 | 0.500 |
+
+
+![Time vs Time+Frequency](figures/phase_time_vs_timefreq_rf.png)
+
 ## Full Summary (first 40 rows)
 | phase | sensor | win_s | overlap | model | bacc_mean | macro_f1_mean |
 | --- | --- | --- | --- | --- | --- | --- |

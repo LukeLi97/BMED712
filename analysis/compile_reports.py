@@ -306,6 +306,30 @@ def main():
                     lines.append("### Best per phase (RF)")
                     lines.append(to_md_table(pd.DataFrame(view)))
             lines.append("")
+            # Time vs Time+Frequency comparison (RF best per phase)
+            try:
+                comp_csv = Path("results") / "artifacts" / "phase_time_vs_timefreq_rf.csv"
+                comp_fig = pick_one("phase_time_vs_timefreq_rf.png")
+                if comp_csv.exists():
+                    lines.append("### RF: Time vs Time+Frequency (best per phase)")
+                    dcomp = pd.read_csv(comp_csv)
+                    for c in [
+                        "time_bacc",
+                        "timefreq_bacc",
+                        "time_win_s",
+                        "timefreq_win_s",
+                        "time_overlap",
+                        "timefreq_overlap",
+                    ]:
+                        if c in dcomp.columns:
+                            dcomp[c] = dcomp[c].astype(float).round(3)
+                    lines.append(to_md_table(dcomp))
+                if comp_fig:
+                    lines.append("")
+                    lines.append(f"![Time vs Time+Frequency]({comp_fig})")
+                lines.append("")
+            except Exception:
+                pass
             lines.append("## Full Summary (first 40 rows)")
             # display subset for readability
             cols = [c for c in df.columns if c in ("phase","sensor","win_s","overlap","model","bacc_mean","macro_f1_mean")]
