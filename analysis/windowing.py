@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple, Sequence
 
 import numpy as np
 import pandas as pd
@@ -11,6 +11,10 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from dataset.quick_start.load_data import load_data_processed, load_metadata  # type: ignore
+try:
+    from analysis.frequency_features import add_bandpower_features  # type: ignore
+except Exception:  # pragma: no cover - optional import for legacy runs
+    add_bandpower_features = None  # type: ignore
 
 
 def get_phase_bounds(md: dict, data_len: int) -> Dict[str, Tuple[int, int]]:
@@ -69,7 +73,13 @@ def spectral_features(x: np.ndarray, fs: float) -> Tuple[float, float, float]:
     return dom, sc, ps
 
 
-def compute_window_features(df: pd.DataFrame, fs: float, i0: int, i1: int) -> Dict[str, float]:
+def compute_window_features(
+    df: pd.DataFrame,
+    fs: float,
+    i0: int,
+    i1: int,
+    freq_bands: Optional[Sequence[Tuple[float, float]]] = None,
+) -> Dict[str, float]:
     out: Dict[str, float] = {}
     for c in df.columns:
         if c == "PacketCounter":
@@ -86,6 +96,9 @@ def compute_window_features(df: pd.DataFrame, fs: float, i0: int, i1: int) -> Di
         out[f"{c}__dom_freq_hz"] = d
         out[f"{c}__spec_centroid_hz"] = sc
         out[f"{c}__spec_power"] = p
+        # Optional frequency-band features per channel
+        if freq_bands and add_bandpower_features is not None:
+            out.update(add_bandpower_features(x, fs, prefix=c, bands=freq_bands))
     out["duration_s"] = float(i1 - i0) / float(fs)
     return out
 
@@ -96,6 +109,7 @@ def build_windowed_table(
     phase: str,
     win_s: float,
     overlap: float = 0.5,
+    freq_bands: Optional[Sequence[Tuple[float, float]]] = None,
 ) -> pd.DataFrame:
     rows: List[Dict[str, object]] = []
     base = Path(base_path)
@@ -130,7 +144,7 @@ def build_windowed_table(
         win = max(2, int(round(win_s * fs)))
         step = max(1, int(round(win * (1.0 - overlap))))
         for i0, i1 in iter_windows(s0, s1, win, step):
-            feats = compute_window_features(df, fs, i0, i1)
+            feats = compute_window_features(df, fs, i0, i1, freq_bands=freq_bands)
             feats["trial_id"] = tr
             feats["subject_id"] = str(md.get("subject", ""))
             feats["label"] = str(md.get("group", "unknown"))

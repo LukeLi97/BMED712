@@ -8,6 +8,7 @@ import pandas as pd
 ARTIFACTS = Path("results/artifacts")
 REPORT = Path("results/report.md")
 REPORT_FULL = Path("results/report_full.md")
+REPORT_WINDOW_FREQ = Path("results/window_report_freq.md")
 BEGIN = "<!-- AUTO_REPORT:BEGIN -->"
 END = "<!-- AUTO_REPORT:END -->"
 
@@ -278,6 +279,40 @@ def main():
     except Exception as e:
         # Do not fail pipeline on report rendering errors
         (ARTIFACTS / "full_report_error.log").write_text(str(e))
+
+    # Build a standalone window+frequency summary if available
+    try:
+        wf = Path("results") / "window_experiments_freq_summary.csv"
+        if wf.exists():
+            df = pd.read_csv(wf)
+            lines = ["# Time-Window + Frequency-Band Report (Standalone)", "", "## Summary"]
+            if not df.empty:
+                # best rows per phase (RF)
+                view = []
+                for ph in sorted(df["phase"].unique()):
+                    sub = df[(df["phase"] == ph) & (df["sensor"] == "RF")]
+                    if sub.empty:
+                        continue
+                    row = sub.sort_values("bacc_mean", ascending=False).iloc[0]
+                    view.append({
+                        "phase": ph,
+                        "win_s": float(row["win_s"]),
+                        "overlap": float(row["overlap"]),
+                        "model": row["model"],
+                        "bacc_mean": float(row["bacc_mean"]),
+                        "macro_f1_mean": float(row.get("macro_f1_mean", float("nan"))),
+                    })
+                if view:
+                    lines.append("### Best per phase (RF)")
+                    lines.append(to_md_table(pd.DataFrame(view)))
+            lines.append("")
+            lines.append("## Full Summary (first 40 rows)")
+            # display subset for readability
+            cols = [c for c in df.columns if c in ("phase","sensor","win_s","overlap","model","bacc_mean","macro_f1_mean")]
+            lines.append(to_md_table(df[cols].head(40)))
+            REPORT_WINDOW_FREQ.write_text("\n".join(lines), encoding="utf-8")
+    except Exception:
+        pass
 
 
 def pick_one(pattern: str) -> Optional[str]:
