@@ -373,6 +373,32 @@ def generate_full_report(metrics: Dict[str, Dict]):
     except Exception:
         pass
 
+    # Window experiments (if present)
+    try:
+        wsum = Path("results") / "window_experiments_summary.csv"
+        if wsum.exists():
+            lines.append("## Window-based Results (subject-wise 5-fold)")
+            dfw = pd.read_csv(wsum)
+            # Compact table: phase, sensor, win_s, overlap, model, BAcc, Macro-F1
+            view = dfw[[
+                "phase","sensor","win_s","overlap","model","bacc_mean","macro_f1_mean"
+            ]].copy()
+            for c in ["bacc_mean","macro_f1_mean","win_s","overlap"]:
+                if c in view.columns:
+                    view[c] = view[c].astype(float).round(3)
+            lines.append(to_md_table(view.head(40)))
+            # Best by phase (RF sensor)
+            wbest = Path("results") / "window_best_per_phase.csv"
+            if wbest.exists():
+                lines.append("")
+                lines.append("### Best Window (per phase, RF sensor)")
+                dfb = pd.read_csv(wbest)
+                for r in dfb.itertuples(index=False):
+                    lines.append(f"- {r.phase}: best win ≈ {float(r.best_win_s_by_RF):.2f}s (BAcc≈{float(r.best_bacc_by_RF):.3f})")
+            lines.append("")
+    except Exception:
+        pass
+
     # Feature importance (RF for interpretability proxy)
     lines.append("## Feature Importance (RF as proxy)")
     fi_all = pick_one("step05_importance_3class_all.png")

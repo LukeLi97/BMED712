@@ -75,9 +75,13 @@ def eval_models(X: pd.DataFrame, y: pd.Series, groups: pd.Series) -> Tuple[str, 
 
     agg: Dict[str, Dict[str, List[float]]] = {k: {m: [] for m in ["acc", "bacc", "f1", "auc"]} for k in models}
 
+    n_folds_used = 0
     for tr, te in skf.split(X, y, groups):
         Xtr, Xte = X.iloc[tr], X.iloc[te]
         ytr, yte = y.iloc[tr], y.iloc[te]
+        # Guard: some subject-wise splits may collapse to a single class in train
+        if len(pd.unique(ytr)) < 2:
+            continue
         for name, clf in models.items():
             clf.fit(Xtr, ytr)
             pred = clf.predict(Xte)
@@ -108,6 +112,20 @@ def eval_models(X: pd.DataFrame, y: pd.Series, groups: pd.Series) -> Tuple[str, 
             agg[name]["bacc"].append(bacc)
             agg[name]["f1"].append(f1)
             agg[name]["auc"].append(auc)
+        n_folds_used += 1
+
+    if n_folds_used == 0:
+        # No valid folds; return a neutral result
+        return "LR", {
+            "acc_mean": float("nan"),
+            "acc_std": float("nan"),
+            "bacc_mean": float("nan"),
+            "bacc_std": float("nan"),
+            "macro_f1_mean": float("nan"),
+            "macro_f1_std": float("nan"),
+            "auc_macro_ovr_mean": float("nan"),
+            "auc_macro_ovr_std": float("nan"),
+        }
 
     # choose best model by balanced accuracy mean
     best_name = None

@@ -74,6 +74,7 @@ We evaluate lightweight, deployment-friendly classifiers (LR/RF/SVM/XGB) on a mu
 | gait_full | HE | 0.767 | 0.029 | SVM | 0.799 | 0.040 |
 
 
+## Window-based Results (subject-wise 5-fold)
 ## Feature Importance (RF as proxy)
 ![Full-sensor Top-20 importance](figures/step05_importance_3class_all.png)
 ![RF Top-20 importance](figures/step05_importance_3class_rf.png)
