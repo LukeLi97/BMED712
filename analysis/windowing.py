@@ -144,4 +144,10 @@ def build_windowed_table(
 __all__ = [
     "build_windowed_table",
     "get_phase_bounds",
+    "load_window_features",
 ]
+
+
+def load_window_features(results_dir: str, phase: str, win_ms: int, overlap_pct: int) -> pd.DataFrame:
+    p = Path(results_dir) / "windows" / phase / f"features_win{win_ms}ms_ov{overlap_pct}.csv"
+    return pd.read_csv(p)

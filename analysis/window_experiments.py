@@ -50,6 +50,7 @@ def run_sweep(
     overlap: float,
     sensors: List[str],  # e.g., ["RF", "ALL"]
     limit_trials: int = None,
+    out_feats_subdir: str = "windows",
 ) -> Path:
     base = Path(base_path)
     out = Path(out_dir)
@@ -68,13 +69,24 @@ def run_sweep(
 
     for phase in PHASES:
         for win_s in windows:
-            # Build (or reuse) window features
-            p_csv = out / f"windows_features_{phase}_{int(round(win_s*1000))}ms.csv"
+            # Build (or reuse) window features into structured folder
+            win_ms = int(round(win_s * 1000))
+            phase_dir = out / out_feats_subdir / phase
+            phase_dir.mkdir(parents=True, exist_ok=True)
+            p_csv = phase_dir / f"features_win{win_ms}ms_ov{int(round(overlap*100))}.csv"
             if not p_csv.exists():
                 df = build_windowed_table(base_path, trials, phase, win_s, overlap)
                 if df.empty:
                     continue
                 df.to_csv(p_csv, index=False)
+                _append_manifest(out / out_feats_subdir / "manifest.json", {
+                    "phase": phase,
+                    "win_ms": win_ms,
+                    "overlap": overlap,
+                    "path": str(p_csv.relative_to(out)),
+                    "n_rows": int(len(df)),
+                    "n_cols": int(df.shape[1]),
+                })
             else:
                 df = pd.read_csv(p_csv)
 
@@ -152,11 +164,30 @@ def main():
     ap.add_argument("--overlap", type=float, default=0.5)
     ap.add_argument("--sensors", default="RF,ALL")
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--out-feats-subdir", default="windows")
     args = ap.parse_args()
 
     wins = [float(x) for x in str(args.windows).split(",") if str(x).strip()]
     sens = [s.strip().upper() for s in str(args.sensors).split(",") if s.strip()]
-    run_sweep(args.data, args.out, wins, float(args.overlap), sens, args.limit)
+    run_sweep(args.data, args.out, wins, float(args.overlap), sens, args.limit, args.out_feats_subdir)
+
+
+def _append_manifest(path: Path, record: Dict[str, object]):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        import json
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+        else:
+            data = {"generated_at": __import__("datetime").datetime.now().isoformat(), "entries": []}
+        # deduplicate by (phase, win_ms, overlap)
+        key = (record.get("phase"), record.get("win_ms"), record.get("overlap"))
+        data["entries"] = [e for e in data.get("entries", []) if (e.get("phase"), e.get("win_ms"), e.get("overlap")) != key]
+        data["entries"].append(record)
+        path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    except Exception:
+        # non-fatal
+        pass
 
 
 if __name__ == "__main__":
