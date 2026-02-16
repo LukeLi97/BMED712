@@ -1,0 +1,4 @@
+pre_uturn: sensor=LF, best_score=1.251, feature=LF_FreeAcc_X_entropy
+uturn: sensor=HE, best_score=1.411, feature=HE_FreeAcc_Y_entropy
+post_uturn: sensor=LF, best_score=1.259, feature=LF_FreeAcc_Y_entropy
+gait_full: sensor=HE, best_score=1.212, feature=HE_FreeAcc_X_domfreq

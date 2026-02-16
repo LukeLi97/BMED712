@@ -1,0 +1,32 @@
+{
+  "classes": [
+    "healthy",
+    "ortho",
+    "neuro"
+  ],
+  "tag": "3class_subsets_helf",
+  "lr": {
+    "macro_f1_mean": 0.716390075204935,
+    "macro_f1_std": 0.08092674147409493,
+    "balanced_acc_mean": 0.7246150438263753,
+    "balanced_acc_std": 0.08837464689225454
+  },
+  "rf": {
+    "macro_f1_mean": 0.820713754490631,
+    "macro_f1_std": 0.0390649089548972,
+    "balanced_acc_mean": 0.8096752156750713,
+    "balanced_acc_std": 0.042144943507410146
+  },
+  "svm": {
+    "macro_f1_mean": 0.8019074569138848,
+    "macro_f1_std": 0.053595072612402095,
+    "balanced_acc_mean": 0.7985768140254376,
+    "balanced_acc_std": 0.05924480441685982
+  },
+  "xgb": {
+    "macro_f1_mean": 0.8016140332964798,
+    "macro_f1_std": 0.0377806606566187,
+    "balanced_acc_mean": 0.7945809301821503,
+    "balanced_acc_std": 0.046011146560034126
+  }
+}
