@@ -15,6 +15,18 @@ This report follows the course objective ‘Robust Gait Phenotyping Across Patho
 ## Next Steps (aligned to course goals)
 - Expand across cohorts (Healthy/Neuro/Ortho); run 3-class classification and leave-one-group-out benchmarks (subject/pathology/condition).
 - Produce sensor ablation curves (#IMUs vs balanced accuracy) and explainability (attention/IG), plus an error modes section.
+
+## Window-based Results (executed 2026-02-16)
+We ran 8 configurations: window lengths 3, 4, 5, 6 s with 25% and 50% overlap across 4 phases (pre‑u‑turn, u‑turn, post‑u‑turn, full gait). Subject‑wise 5‑fold CV; groups=subjects; no leakage. Outputs:
+- Summary: `results/window_experiments_summary.csv`
+- Best RF per phase (balanced accuracy, 25% overlap): `results/window_best_per_phase.csv`
+- Per‑phase features: `results/windows/<phase>/features_win{ms}_ov{pct}.csv`
+
+Headline findings (RF sensor):
+- pre‑u‑turn: best at 4 s, BAcc≈0.900
+- post‑u‑turn: best at 4–6 s, BAcc≈0.890
+- gait‑full: best at 5 s, BAcc≈0.868
+- u‑turn: challenging; BAcc≈0.60 across tested windows
 ## Sensor minimization (exhaustive)
 - Criterion: minimal k with Macro-F1 within 0.02 of full-sensor Macro-F1 (subject-wise 5-fold).
 - Recommended: k=2, sensors=['LB', 'RF'], model=svm (Macro-F1=0.813, BAcc=0.811).
@@ -30,6 +42,7 @@ This report follows the course objective ‘Robust Gait Phenotyping Across Patho
 - neuro holdout=CVA: recall=0.883 on 128 trials
 - neuro holdout=PD: recall=0.825 on 160 trials
 - neuro holdout=RIL: recall=0.734 on 398 trials
+
 
 
 
@@ -99,6 +112,7 @@ This report follows the course objective ‘Robust Gait Phenotyping Across Patho
 - python analysis/train_baseline.py
 - python analysis/compile_reports.py
 <!-- AUTO_REPORT:END -->
+
 
 
 

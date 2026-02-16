@@ -77,37 +77,39 @@ We evaluate lightweight, deployment-friendly classifiers (LR/RF/SVM/XGB) on a mu
 ## Window-based Results (subject-wise 5-fold)
 | phase | sensor | win_s | overlap | model | bacc_mean | macro_f1_mean |
 | --- | --- | --- | --- | --- | --- | --- |
-| pre_uturn | RF | 1.000 | 0.500 | RF | 0.841 | 0.774 |
-| pre_uturn | ALL | 1.000 | 0.500 | RF | 0.799 | 0.714 |
-| pre_uturn | RF | 1.280 | 0.500 | SVM | 0.870 | 0.730 |
-| pre_uturn | ALL | 1.280 | 0.500 | RF | 0.801 | 0.648 |
-| pre_uturn | RF | 2.560 | 0.500 | SVM | 0.873 | 0.737 |
-| pre_uturn | ALL | 2.560 | 0.500 | LR | 0.849 | 0.792 |
-| uturn | RF | 1.000 | 0.500 | LR | 0.822 | 0.674 |
-| uturn | ALL | 1.000 | 0.500 | RF | 0.797 | 0.661 |
-| uturn | RF | 1.280 | 0.500 | LR | 0.709 | 0.570 |
-| uturn | ALL | 1.280 | 0.500 | RF | 0.725 | 0.597 |
-| uturn | RF | 2.560 | 0.500 | LR | 0.587 | 0.525 |
-| uturn | ALL | 2.560 | 0.500 | RF | 0.578 | 0.494 |
-| post_uturn | RF | 1.000 | 0.500 | SVM | 0.839 | 0.820 |
-| post_uturn | ALL | 1.000 | 0.500 | RF | 0.812 | 0.795 |
-| post_uturn | RF | 1.280 | 0.500 | SVM | 0.812 | 0.702 |
-| post_uturn | ALL | 1.280 | 0.500 | RF | 0.747 | 0.714 |
-| post_uturn | RF | 2.560 | 0.500 | LR | 0.831 | 0.782 |
-| post_uturn | ALL | 2.560 | 0.500 | RF | 0.807 | 0.731 |
-| gait_full | RF | 1.000 | 0.500 | SVM | 0.839 | 0.780 |
-| gait_full | ALL | 1.000 | 0.500 | RF | 0.844 | 0.775 |
-| gait_full | RF | 1.280 | 0.500 | SVM | 0.866 | 0.797 |
-| gait_full | ALL | 1.280 | 0.500 | RF | 0.839 | 0.767 |
-| gait_full | RF | 2.560 | 0.500 | SVM | 0.883 | 0.816 |
-| gait_full | ALL | 2.560 | 0.500 | RF | 0.841 | 0.782 |
+| pre_uturn | RF | 3.000 | 0.250 | RF | 0.823 | 0.734 |
+| pre_uturn | ALL | 3.000 | 0.250 | RF | 0.836 | 0.791 |
+| pre_uturn | RF | 4.000 | 0.250 | LR | 0.900 | 0.872 |
+| pre_uturn | ALL | 4.000 | 0.250 | LR | 0.873 | 0.839 |
+| pre_uturn | RF | 5.000 | 0.250 | RF | 0.785 | 0.753 |
+| pre_uturn | ALL | 5.000 | 0.250 | RF | 0.881 | 0.805 |
+| pre_uturn | RF | 6.000 | 0.250 | SVM | 0.847 | 0.787 |
+| pre_uturn | ALL | 6.000 | 0.250 | RF | 0.825 | 0.746 |
+| uturn | RF | 3.000 | 0.250 | SVM | 0.600 | 0.600 |
+| uturn | ALL | 3.000 | 0.250 | LR | 0.600 | 0.600 |
+| post_uturn | RF | 3.000 | 0.250 | SVM | 0.835 | 0.743 |
+| post_uturn | ALL | 3.000 | 0.250 | RF | 0.871 | 0.757 |
+| post_uturn | RF | 4.000 | 0.250 | LR | 0.890 | 0.794 |
+| post_uturn | ALL | 4.000 | 0.250 | RF | 0.855 | 0.791 |
+| post_uturn | RF | 5.000 | 0.250 | LR | 0.851 | 0.835 |
+| post_uturn | ALL | 5.000 | 0.250 | RF | 0.856 | 0.817 |
+| post_uturn | RF | 6.000 | 0.250 | SVM | 0.876 | 0.808 |
+| post_uturn | ALL | 6.000 | 0.250 | RF | 0.857 | 0.791 |
+| gait_full | RF | 3.000 | 0.250 | RF | 0.786 | 0.698 |
+| gait_full | ALL | 3.000 | 0.250 | RF | 0.836 | 0.760 |
+| gait_full | RF | 4.000 | 0.250 | SVM | 0.786 | 0.738 |
+| gait_full | ALL | 4.000 | 0.250 | RF | 0.828 | 0.794 |
+| gait_full | RF | 5.000 | 0.250 | LR | 0.868 | 0.828 |
+| gait_full | ALL | 5.000 | 0.250 | RF | 0.809 | 0.756 |
+| gait_full | RF | 6.000 | 0.250 | LR | 0.852 | 0.812 |
+| gait_full | ALL | 6.000 | 0.250 | RF | 0.831 | 0.783 |
 
 
 ### Best Window (per phase, RF sensor)
-- gait_full: best win ≈ 2.56s (BAcc≈0.883)
-- post_uturn: best win ≈ 1.00s (BAcc≈0.839)
-- pre_uturn: best win ≈ 2.56s (BAcc≈0.873)
-- uturn: best win ≈ 1.00s (BAcc≈0.822)
+- gait_full: best win ≈ 5.00s (BAcc≈0.868)
+- post_uturn: best win ≈ 4.00s (BAcc≈0.890)
+- pre_uturn: best win ≈ 4.00s (BAcc≈0.900)
+- uturn: best win ≈ 3.00s (BAcc≈0.600)
 
 ## Feature Importance (RF as proxy)
 ![Full-sensor Top-20 importance](figures/step05_importance_3class_all.png)

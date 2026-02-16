@@ -29,7 +29,8 @@ PHASE2CSV = {
 
 
 def col_is_feature(c: str) -> bool:
-    return c not in {"trial_id", "subject_id", "label"}
+    # Exclude identifiers and non-signal descriptors
+    return c not in {"trial_id", "subject_id", "label", "phase", "win_s", "overlap"}
 
 
 def subset_sensor(df: pd.DataFrame, sensor: str) -> pd.DataFrame:
