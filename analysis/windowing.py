@@ -10,7 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from dataset.quick_start.load_data import load_trial  # type: ignore
+from dataset.quick_start.load_data import load_data_processed, load_metadata  # type: ignore
 
 
 def get_phase_bounds(md: dict, data_len: int) -> Dict[str, Tuple[int, int]]:
@@ -99,9 +99,25 @@ def build_windowed_table(
 ) -> pd.DataFrame:
     rows: List[Dict[str, object]] = []
     base = Path(base_path)
+    def load_processed_only(base: Path, trial: str):
+        # Infer cohort/patient from naming convention like 'HS_1_1' or 'HOA_7_2'
+        parts = trial.split("_")
+        if len(parts) < 3:
+            raise ValueError(f"Bad trial name: {trial}")
+        patient = "_" + "_".join(parts[:2])  # keep underscore to avoid accidental concat
+        patient = (parts[0] + "_" + parts[1])
+        cohort = parts[0]
+        for top in ["healthy", "ortho", "neuro"]:
+            trial_path = base / top / cohort / patient / trial
+            if trial_path.exists():
+                md = load_metadata(str(trial_path))
+                df = load_data_processed(str(trial_path))
+                return {"metadata": md, "data_processed": df}
+        raise FileNotFoundError(f"Trial path not found for {trial}")
+
     for tr in trials:
         try:
-            t = load_trial(str(base), tr)
+            t = load_processed_only(base, tr)
         except Exception:
             continue
         md = t["metadata"]
@@ -129,4 +145,3 @@ __all__ = [
     "build_windowed_table",
     "get_phase_bounds",
 ]
-

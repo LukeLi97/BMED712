@@ -75,6 +75,40 @@ We evaluate lightweight, deployment-friendly classifiers (LR/RF/SVM/XGB) on a mu
 
 
 ## Window-based Results (subject-wise 5-fold)
+| phase | sensor | win_s | overlap | model | bacc_mean | macro_f1_mean |
+| --- | --- | --- | --- | --- | --- | --- |
+| pre_uturn | RF | 1.000 | 0.500 | RF | 0.841 | 0.774 |
+| pre_uturn | ALL | 1.000 | 0.500 | RF | 0.799 | 0.714 |
+| pre_uturn | RF | 1.280 | 0.500 | SVM | 0.870 | 0.730 |
+| pre_uturn | ALL | 1.280 | 0.500 | RF | 0.801 | 0.648 |
+| pre_uturn | RF | 2.560 | 0.500 | SVM | 0.873 | 0.737 |
+| pre_uturn | ALL | 2.560 | 0.500 | LR | 0.849 | 0.792 |
+| uturn | RF | 1.000 | 0.500 | LR | 0.822 | 0.674 |
+| uturn | ALL | 1.000 | 0.500 | RF | 0.797 | 0.661 |
+| uturn | RF | 1.280 | 0.500 | LR | 0.709 | 0.570 |
+| uturn | ALL | 1.280 | 0.500 | RF | 0.725 | 0.597 |
+| uturn | RF | 2.560 | 0.500 | LR | 0.587 | 0.525 |
+| uturn | ALL | 2.560 | 0.500 | RF | 0.578 | 0.494 |
+| post_uturn | RF | 1.000 | 0.500 | SVM | 0.839 | 0.820 |
+| post_uturn | ALL | 1.000 | 0.500 | RF | 0.812 | 0.795 |
+| post_uturn | RF | 1.280 | 0.500 | SVM | 0.812 | 0.702 |
+| post_uturn | ALL | 1.280 | 0.500 | RF | 0.747 | 0.714 |
+| post_uturn | RF | 2.560 | 0.500 | LR | 0.831 | 0.782 |
+| post_uturn | ALL | 2.560 | 0.500 | RF | 0.807 | 0.731 |
+| gait_full | RF | 1.000 | 0.500 | SVM | 0.839 | 0.780 |
+| gait_full | ALL | 1.000 | 0.500 | RF | 0.844 | 0.775 |
+| gait_full | RF | 1.280 | 0.500 | SVM | 0.866 | 0.797 |
+| gait_full | ALL | 1.280 | 0.500 | RF | 0.839 | 0.767 |
+| gait_full | RF | 2.560 | 0.500 | SVM | 0.883 | 0.816 |
+| gait_full | ALL | 2.560 | 0.500 | RF | 0.841 | 0.782 |
+
+
+### Best Window (per phase, RF sensor)
+- gait_full: best win ≈ 2.56s (BAcc≈0.883)
+- post_uturn: best win ≈ 1.00s (BAcc≈0.839)
+- pre_uturn: best win ≈ 2.56s (BAcc≈0.873)
+- uturn: best win ≈ 1.00s (BAcc≈0.822)
+
 ## Feature Importance (RF as proxy)
 ![Full-sensor Top-20 importance](figures/step05_importance_3class_all.png)
 ![RF Top-20 importance](figures/step05_importance_3class_rf.png)
