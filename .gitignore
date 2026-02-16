@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenv
+.venv/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# MacOS
+.DS_Store
+
+# Archives and large bundles
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Logs and caches
+*.log
+.cache/
+
+# Local results caches (keep CSV/HTML by default)
+results/**/*.pkl
+results/**/*.npz
+results/**/*.npy
+
+# Secrets
+.env
+.env.*
