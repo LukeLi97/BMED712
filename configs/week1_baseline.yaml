@@ -1,0 +1,37 @@
+version: 1
+name: Week1_Baseline
+date: 2026-02-16
+features_scope: full_event_no_window  # bulk features per trial (no sliding windows)
+cv:
+  strategy: StratifiedGroupKFold
+  n_splits: 5
+  group: subject
+models:
+  - LR  # LogisticRegression (balanced)
+  - RF  # RandomForestClassifier (balanced_subsample)
+  - SVM # RBF, class_weight=balanced
+  - XGB # optional, if available
+sensor_sets:
+  - all
+  - feet   # LF+RF
+  - lb
+  - lf
+  - rf
+  - he
+metrics:
+  - macro_f1_mean
+  - macro_f1_std
+  - balanced_acc_mean
+  - balanced_acc_std
+artifacts:
+  - results/artifacts/table_step1_baselines.csv
+  - results/artifacts/step04b_subset_search_*.json
+  - results/figures/step03_confusion_3class_*.png
+  - results/figures/step04_sensors_frontier.png
+  - results/report_full.html
+repro:
+  - python analysis/train_baseline.py
+  - python analysis/compile_reports.py
+  - python analysis/export_report.py
+notes: |
+  This file freezes Week 1 baseline settings before moving to window-based experiments.

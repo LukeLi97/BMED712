@@ -40,6 +40,7 @@ This report follows the course objective ‘Robust Gait Phenotyping Across Patho
 
 
 
+
 <!-- AUTO_REPORT:BEGIN -->
 ## Executive Summary
 - Best full-sensor model: SVM (BAcc≈0.809).
@@ -93,6 +94,7 @@ This report follows the course objective ‘Robust Gait Phenotyping Across Patho
 - python analysis/train_baseline.py
 - python analysis/compile_reports.py
 <!-- AUTO_REPORT:END -->
+
 
 
 
