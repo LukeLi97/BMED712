@@ -30,3 +30,10 @@ results/**/*.npy
 # Secrets
 .env
 .env.*
+
+# Datasets (keep only minimal samples)
+dataset/data/**
+!dataset/data/.gitkeep
+!dataset/data/sample/**
+!dataset/quick_start/**
+
