@@ -1,0 +1,1 @@
+PDF export not available (wkhtmltopdf/pandoc missing). Use report_full.html and print to PDF via a browser.

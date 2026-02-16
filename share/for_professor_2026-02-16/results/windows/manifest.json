@@ -1,0 +1,221 @@
+{
+  "generated_at": "2026-02-16T15:51:23.130567",
+  "entries": [
+    {
+      "phase": "pre_uturn",
+      "win_ms": 1000,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win1000ms_ov50.csv",
+      "n_rows": 26703,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 3000,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win3000ms_ov50.csv",
+      "n_rows": 343,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 4000,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win4000ms_ov50.csv",
+      "n_rows": 231,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 5000,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win5000ms_ov50.csv",
+      "n_rows": 152,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 6000,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win6000ms_ov50.csv",
+      "n_rows": 108,
+      "n_cols": 223
+    },
+    {
+      "phase": "uturn",
+      "win_ms": 3000,
+      "overlap": 0.5,
+      "path": "windows/uturn/features_win3000ms_ov50.csv",
+      "n_rows": 10,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 3000,
+      "overlap": 0.5,
+      "path": "windows/post_uturn/features_win3000ms_ov50.csv",
+      "n_rows": 380,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 4000,
+      "overlap": 0.5,
+      "path": "windows/post_uturn/features_win4000ms_ov50.csv",
+      "n_rows": 255,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 5000,
+      "overlap": 0.5,
+      "path": "windows/post_uturn/features_win5000ms_ov50.csv",
+      "n_rows": 167,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 6000,
+      "overlap": 0.5,
+      "path": "windows/post_uturn/features_win6000ms_ov50.csv",
+      "n_rows": 133,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 3000,
+      "overlap": 0.5,
+      "path": "windows/gait_full/features_win3000ms_ov50.csv",
+      "n_rows": 985,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 4000,
+      "overlap": 0.5,
+      "path": "windows/gait_full/features_win4000ms_ov50.csv",
+      "n_rows": 708,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 5000,
+      "overlap": 0.5,
+      "path": "windows/gait_full/features_win5000ms_ov50.csv",
+      "n_rows": 539,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 6000,
+      "overlap": 0.5,
+      "path": "windows/gait_full/features_win6000ms_ov50.csv",
+      "n_rows": 423,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 3000,
+      "overlap": 0.25,
+      "path": "windows/pre_uturn/features_win3000ms_ov25.csv",
+      "n_rows": 244,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 4000,
+      "overlap": 0.25,
+      "path": "windows/pre_uturn/features_win4000ms_ov25.csv",
+      "n_rows": 156,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 5000,
+      "overlap": 0.25,
+      "path": "windows/pre_uturn/features_win5000ms_ov25.csv",
+      "n_rows": 122,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 6000,
+      "overlap": 0.25,
+      "path": "windows/pre_uturn/features_win6000ms_ov25.csv",
+      "n_rows": 90,
+      "n_cols": 223
+    },
+    {
+      "phase": "uturn",
+      "win_ms": 3000,
+      "overlap": 0.25,
+      "path": "windows/uturn/features_win3000ms_ov25.csv",
+      "n_rows": 10,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 3000,
+      "overlap": 0.25,
+      "path": "windows/post_uturn/features_win3000ms_ov25.csv",
+      "n_rows": 261,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 4000,
+      "overlap": 0.25,
+      "path": "windows/post_uturn/features_win4000ms_ov25.csv",
+      "n_rows": 178,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 5000,
+      "overlap": 0.25,
+      "path": "windows/post_uturn/features_win5000ms_ov25.csv",
+      "n_rows": 142,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 6000,
+      "overlap": 0.25,
+      "path": "windows/post_uturn/features_win6000ms_ov25.csv",
+      "n_rows": 99,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 3000,
+      "overlap": 0.25,
+      "path": "windows/gait_full/features_win3000ms_ov25.csv",
+      "n_rows": 673,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 4000,
+      "overlap": 0.25,
+      "path": "windows/gait_full/features_win4000ms_ov25.csv",
+      "n_rows": 486,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 5000,
+      "overlap": 0.25,
+      "path": "windows/gait_full/features_win5000ms_ov25.csv",
+      "n_rows": 375,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 6000,
+      "overlap": 0.25,
+      "path": "windows/gait_full/features_win6000ms_ov25.csv",
+      "n_rows": 302,
+      "n_cols": 223
+    }
+  ]
+}

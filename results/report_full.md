@@ -103,6 +103,20 @@ We evaluate lightweight, deployment-friendly classifiers (LR/RF/SVM/XGB) on a mu
 | gait_full | ALL | 5.000 | 0.250 | RF | 0.809 | 0.756 |
 | gait_full | RF | 6.000 | 0.250 | LR | 0.852 | 0.812 |
 | gait_full | ALL | 6.000 | 0.250 | RF | 0.831 | 0.783 |
+| pre_uturn | RF | 3.000 | 0.500 | LR | 0.847 | 0.771 |
+| pre_uturn | ALL | 3.000 | 0.500 | RF | 0.840 | 0.764 |
+| pre_uturn | RF | 4.000 | 0.500 | LR | 0.834 | 0.772 |
+| pre_uturn | ALL | 4.000 | 0.500 | LR | 0.810 | 0.765 |
+| pre_uturn | RF | 5.000 | 0.500 | LR | 0.856 | 0.815 |
+| pre_uturn | ALL | 5.000 | 0.500 | LR | 0.863 | 0.782 |
+| pre_uturn | RF | 6.000 | 0.500 | LR | 0.780 | 0.720 |
+| pre_uturn | ALL | 6.000 | 0.500 | LR | 0.828 | 0.797 |
+| uturn | RF | 3.000 | 0.500 | SVM | 0.600 | 0.600 |
+| uturn | ALL | 3.000 | 0.500 | LR | 0.600 | 0.600 |
+| post_uturn | RF | 3.000 | 0.500 | LR | 0.784 | 0.712 |
+| post_uturn | ALL | 3.000 | 0.500 | RF | 0.802 | 0.748 |
+| post_uturn | RF | 4.000 | 0.500 | LR | 0.820 | 0.741 |
+| post_uturn | ALL | 4.000 | 0.500 | RF | 0.810 | 0.736 |
 
 
 ### Best Window (per phase, RF sensor)
@@ -120,7 +134,7 @@ We evaluate lightweight, deployment-friendly classifiers (LR/RF/SVM/XGB) on a mu
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | pre_uturn | LF | 1356.000 | LF_FreeAcc_X_entropy | 1.251 | 0.596 | SVM | 0.789 | 0.810 | 0.776 | 0.368 |
 | uturn | HE | 1356.000 | HE_FreeAcc_Y_entropy | 1.411 | 0.467 | SVM | 0.718 | 0.759 | 0.703 | 0.331 |
-| post_uturn | LF | 1356.000 | LF_FreeAcc_Y_entropy | 1.259 | 0.615 | SVM | 0.757 | 0.792 | 0.743 | 0.369 |
+| post_uturn | LF | 1356.000 | LF_FreeAcc_Y_entropy | 1.259 | 0.615 | SVM | 0.757 | 0.792 | 0.743 | 0.372 |
 | gait_full | HE | 1356.000 | HE_FreeAcc_X_domfreq | 1.212 | 0.461 | RF | 0.767 | 0.848 | 0.782 | 0.382 |
 
 
@@ -133,7 +147,7 @@ We evaluate lightweight, deployment-friendly classifiers (LR/RF/SVM/XGB) on a mu
 ### Best Single-Sensor CV Metrics (subject-wise 5-fold)
 - pre_uturn: LF — model=SVM, BAcc=0.789, Acc=0.810, Macro-F1=0.776, AUC(macro-OvR)=0.368
 - uturn: HE — model=SVM, BAcc=0.718, Acc=0.759, Macro-F1=0.703, AUC(macro-OvR)=0.331
-- post_uturn: LF — model=SVM, BAcc=0.757, Acc=0.792, Macro-F1=0.743, AUC(macro-OvR)=0.369
+- post_uturn: LF — model=SVM, BAcc=0.757, Acc=0.792, Macro-F1=0.743, AUC(macro-OvR)=0.372
 - gait_full: HE — model=RF, BAcc=0.767, Acc=0.848, Macro-F1=0.782, AUC(macro-OvR)=0.382
 
 ## Discussion & Error Modes
