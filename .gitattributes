@@ -1,0 +1,8 @@
+# Git LFS tracking for large analysis artifacts
+# Enable LFS locally with: git lfs install
+
+results/windows/**/*.csv filter=lfs diff=lfs merge=lfs -text
+results/windows_features_*.csv filter=lfs diff=lfs merge=lfs -text
+results/features_*.csv filter=lfs diff=lfs merge=lfs -text
+share/**/*.zip filter=lfs diff=lfs merge=lfs -text
+
