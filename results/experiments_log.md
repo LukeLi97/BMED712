@@ -19,7 +19,13 @@ All times in local time, 2026-02-23.
 - Takeaway: Environment/tooling confirmed; to realize gains we must feed raw time-series windows [B, T, C].
 - Next: Add a raw-window loader and run MiniMamba on RF time series (start with gait_full 3.0 s, then u-turn 6.0 s).
 
+## 12:45 – Raw-window loader + MiniMamba on RF (gait_full)
+- What: Implemented raw-window loader to produce [B,T,C] from processed trials (RF channels only) and trained MiniMamba on raw sequences.
+- Why: Feature-aggregated rows are too compressed for a sequence model; raw sequences allow temporal modeling.
+- Data/Setup: gait_full, 3.0 s @ 50%, RF; balanced ~30 trials across groups; 3-fold subject-wise CV; d_model=32, layers=2; 3 epochs/fold (quick pass on Mac).
+- Result (very preliminary): mean acc ≈ 0.40 (std ≈ 0.43). With such tiny model/epochs this is an expected low baseline; indicates pipeline is functional but needs capacity/epochs.
+- Next: Increase epochs (e.g., 20–30), add batch norm or residual width (d_model 64–128), and consider simple SpecAugment-style noise. Focus next on u-turn 6.0 s where sequence gains are likely bigger.
+
 ## 12:30 – Documentation
 - Updated brief report with leakage handling (EN) and small-window meaning for patient cohorts (CN/EN).
 - Git: commits 025db35 and earlier (docs updates) pushed to origin/main.
-
