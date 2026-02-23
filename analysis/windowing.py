@@ -12,9 +12,10 @@ if str(REPO_ROOT) not in sys.path:
 
 from dataset.quick_start.load_data import load_data_processed, load_metadata  # type: ignore
 try:
-    from analysis.frequency_features import add_bandpower_features  # type: ignore
+    from analysis.frequency_features import add_bandpower_features, add_filterbank_features  # type: ignore
 except Exception:  # pragma: no cover - optional import for legacy runs
     add_bandpower_features = None  # type: ignore
+    add_filterbank_features = None  # type: ignore
 
 
 def get_phase_bounds(md: dict, data_len: int) -> Dict[str, Tuple[int, int]]:
@@ -79,6 +80,7 @@ def compute_window_features(
     i0: int,
     i1: int,
     freq_bands: Optional[Sequence[Tuple[float, float]]] = None,
+    filterbank: Optional[Tuple[int, float]] = None,
 ) -> Dict[str, float]:
     out: Dict[str, float] = {}
     for c in df.columns:
@@ -99,6 +101,10 @@ def compute_window_features(
         # Optional frequency-band features per channel
         if freq_bands and add_bandpower_features is not None:
             out.update(add_bandpower_features(x, fs, prefix=c, bands=freq_bands))
+        # Optional filterbank features per channel
+        if filterbank and add_filterbank_features is not None:
+            n_bands, fmax = int(filterbank[0]), float(filterbank[1])
+            out.update(add_filterbank_features(x, fs, prefix=c, n_bands=n_bands, fmax=fmax))
     out["duration_s"] = float(i1 - i0) / float(fs)
     return out
 
@@ -110,6 +116,7 @@ def build_windowed_table(
     win_s: float,
     overlap: float = 0.5,
     freq_bands: Optional[Sequence[Tuple[float, float]]] = None,
+    filterbank: Optional[Tuple[int, float]] = None,
 ) -> pd.DataFrame:
     rows: List[Dict[str, object]] = []
     base = Path(base_path)
@@ -144,7 +151,7 @@ def build_windowed_table(
         win = max(2, int(round(win_s * fs)))
         step = max(1, int(round(win * (1.0 - overlap))))
         for i0, i1 in iter_windows(s0, s1, win, step):
-            feats = compute_window_features(df, fs, i0, i1, freq_bands=freq_bands)
+            feats = compute_window_features(df, fs, i0, i1, freq_bands=freq_bands, filterbank=filterbank)
             feats["trial_id"] = tr
             feats["subject_id"] = str(md.get("subject", ""))
             feats["label"] = str(md.get("group", "unknown"))

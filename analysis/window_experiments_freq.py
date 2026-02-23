@@ -1,7 +1,7 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List, Sequence, Tuple, Optional
 
 import numpy as np
 import pandas as pd
@@ -62,6 +62,7 @@ def run_sweep_freq(
     sensors: Sequence[str],
     bands: Sequence[Tuple[float, float]],
     out_subdir: str = "windows_freq",
+    filterbank: Optional[Tuple[int, float]] = None,
     phases: Sequence[str] = PHASES,
 ) -> Path:
     base = Path(base_path)
@@ -83,7 +84,7 @@ def run_sweep_freq(
                 phase_dir.mkdir(parents=True, exist_ok=True)
                 p_csv = phase_dir / f"features_win{win_ms}ms_ov{ov_pct}.csv"
                 if not p_csv.exists():
-                    df = build_windowed_table(base_path, trials, phase, win_s, overlap=ov, freq_bands=bands)
+                    df = build_windowed_table(base_path, trials, phase, win_s, overlap=ov, freq_bands=bands, filterbank=filterbank)
                     if df.empty:
                         continue
                     df.to_csv(p_csv, index=False)
@@ -139,6 +140,7 @@ def main():
     ap.add_argument("--overlaps", default="0.25,0.50")
     ap.add_argument("--sensors", default="RF,ALL")
     ap.add_argument("--bands", default="0-3,3-8,8-15")
+    ap.add_argument("--filterbank", default="", help="e.g., 16@20 (n_bands@fmaxHz)")
     ap.add_argument("--subdir", default="windows_freq")
     ap.add_argument("--limit", type=int, default=None, help="Approx total trials (balanced per group)")
     ap.add_argument("--phases", default="pre_uturn,uturn,post_uturn,gait_full")
@@ -157,6 +159,10 @@ def main():
         bands.append((float(lo), float(hi)))
 
     phases = [p.strip() for p in str(args.phases).split(",") if p.strip()]
+    fb=None
+    if str(args.filterbank).strip():
+        parts=str(args.filterbank).split("@")
+        fb=(int(parts[0]), float(parts[1]))
     # pass a limited trial set to run_sweep_freq by temporarily overriding list_trials
     base = Path(args.data)
     per = None if args.limit is None else max(1, int(args.limit) // 3)
@@ -167,7 +173,7 @@ def main():
         return trials
     globals()['list_trials'] = _patched_list_trials
     try:
-        run_sweep_freq(args.data, args.out, wins, ovs, sens, bands, out_subdir=args.subdir, phases=phases)
+        run_sweep_freq(args.data, args.out, wins, ovs, sens, bands, out_subdir=args.subdir, filterbank=fb, phases=phases)
     finally:
         globals()['list_trials'] = _orig_list_trials
 

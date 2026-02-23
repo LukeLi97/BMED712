@@ -35,3 +35,9 @@ All times in local time, 2026-02-23.
 - Why: Test finer spectral resolution near cadence/harmonics.
 - Result (subsampled quick CV): BAcc≈0.750, Macro‑F1≈0.730 (SVM). Full-table CV pending.
 - Next: Add 16-band triangular filterbank and compare to narrow bands; then integrate trial‑level voting.
+
+## 13:30 – Filterbank setup (gait_full 3.0s@50%)
+- What: Added triangular filterbank feature option (16 bands up to 20 Hz) to windowing pipeline.
+- Why: Provide smoother “frequency windowing” than hard bands.
+- Result: Feature generation OK; quick CV on limited trials currently unstable (NaNs) — likely due to class imbalance after limiting.
+- Next: Run full set (no limit) or enforce balanced per-group sampling per fold; then compare with narrow-band setup.
