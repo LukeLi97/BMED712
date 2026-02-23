@@ -19,6 +19,15 @@
 - uturn（50%，时间域）：2.56 s → BAcc≈0.587（LR）；3.0 s → ≈0.600（SVM）。
 - uturn（50%，时频）：6.0 s → BAcc≈0.932（LR）。
 
+## Leakage 处理说明（我们如何避免泄漏）
+- 定义：训练阶段“看到了”验证/测试折信息的任何路径（含数据切分、预处理、特征、模型选择等）都会导致过高评估。
+- 我们的做法：
+  - 受试者分组切分：`StratifiedGroupKFold(n_splits=5, groups=subject_id)`，同一受试者的所有窗口（含多次试次、不同阶段）严格在同一折，杜绝“同人不同折”的泄漏。
+  - 预处理在管线内：`Imputer/StandardScaler` 放在 `sklearn` Pipeline 里，按折拟合（只用训练折统计量），避免“全数据标准化”。
+  - 特征提取逐窗进行：时/频特征由该窗口自身数据计算，不使用全数据统计或标签；相位分割依赖 trial 元数据而非标签分布。
+  - 重叠窗口相关性：虽然 50% 重叠会带来相关样本，但因按受试者分组，不会出现同一受试者的相关窗口跨折分布，不构成泄漏。
+- 残余风险与改进：跨模型对比（LR/SVM/RF）使用同一 CV 选择“最优模型”会有轻微选择偏倚（非泄漏）。如需更严谨，可用“嵌套CV”或预留独立留出受试者作为最终测试。
+
 ## 较小窗口的具体含义（面向患者人群）
 - 研究对象为神经/骨科等患者，步速更慢、步态变异更大，步行周期（stride）往往长于健康人：约 1.33–2.0 s（60–90 步/分）。
 - 在 fs≈100 Hz 下：
@@ -68,6 +77,15 @@ Recommendations:
 - 2.56 s @ 50% can beat 3.0 s @ 50% in pre/post_uturn but still falls short of 4.0 s @ 25% overall; 3.0 s @ 50% is most stable for gait_full.
 - uturn benefits from longer context + frequency bands; 6.0 s + bands clearly superior to any time-only small window.
 
+## Leakage handling (how we avoid it)
+- Definition: any path where training indirectly uses validation/test information (splits, preprocessing, features, model selection) inflates metrics.
+- Our safeguards:
+  - Subject-wise grouping: `StratifiedGroupKFold(..., groups=subject_id)` keeps all windows of a subject in a single fold; no cross-fold subject leakage.
+  - In-fold preprocessing: `Imputer/StandardScaler` inside Pipeline fit on training folds only; no global normalization.
+  - Per-window features only: time/spectral descriptors computed from each window itself; phase segmentation uses trial metadata, not labels.
+  - Overlap: 50% overlap creates correlation, but since grouping is by subject, correlated windows never cross folds—so no leakage.
+- Residual risk and remedy: choosing the best among LR/SVM/RF on the same CV can induce slight selection bias (not leakage). Use nested CV or a subject hold-out test set for final verification if needed.
+
 ## What small windows mean for patient cohorts
 - Our participants are neurological/orthopedic patients with slower speed and higher variability; stride time is often 1.33–2.0 s (60–90 steps/min), longer than healthy adults.
 - With fs≈100 Hz:
@@ -82,3 +100,23 @@ Recommendations:
 ## Reproducibility
 - Additional evaluations used existing tables under `results/windows/*/features_win{win}ms_ov50.csv` and `results/windows_features_*_{2560}ms.csv`.
 - Prior summaries: `results/window_experiments_summary.csv`, `results/window_report.md`, `results/window_report_freq.md`.
+
+---
+
+## 新增更新（2026-02-23 版，补充）
+- 小窗口（1.0/1.28/2.56 s）在 50% 重叠下：
+  - pre_uturn：2.56 s 在 BAcc 上优于 3.0 s，但总体仍不及 4.0 s @ 25% 最优；
+  - post_uturn：2.56 s 同样优于 3.0/4.0 s @ 50%，但低于 4.0 s @ 25%；
+  - gait_full：3.0 s @ 50% 仍最优，2.56 s 次之且 Macro‑F1 略高；
+  - uturn：时间域小窗整体无优势；6.0 s @ 50% + 频带特征显著最优（BAcc≈0.932）。
+- 研究对象为患者（非健康人）：窗口选择以“至少覆盖 1 个完整 stride，慢步态可取 2–3 个 stride + 50% 重叠”为原则；pre/post‑u‑turn 可降至 25% 重叠以降低相关性。
+- Leakage 处理（要点）：按受试者分组 5 折；Imputer/StandardScaler 在 Pipeline 内按折拟合；特征逐窗计算；50% 重叠带来相关样本但不会跨折到同一受试者，不构成泄漏。模型选择偏倚≠泄漏，如需更严谨可用嵌套 CV 或留出受试者测试集。
+
+### English Addendum
+- Small windows (1.0/1.28/2.56 s, 50% overlap): 2.56 s beats 3.0 s in pre/post‑u‑turn but still trails 4.0 s @ 25%; 3.0 s @ 50% remains best for gait_full; uturn prefers 6.0 s @ 50% + frequency bands (BAcc≈0.932).
+- Patient cohorts: ensure ≥1 full stride per window; for slow/variable gait use 2–3 strides + 50% overlap; for pre/post‑u‑turn consider 25% overlap to reduce correlation.
+- Leakage handling: subject‑wise 5‑fold; in‑fold preprocessing; per‑window features; overlap does not leak across folds. Remaining risk is model‑selection bias; use nested CV or held‑out subjects if needed.
+
+
+### Leakage handling — English (verbatim)
+We use subject-wise StratifiedGroupKFold (5 folds) so that all windows from the same subject stay in a single fold; no cross-fold subject leakage. Preprocessing steps (imputation/standardization) live inside sklearn Pipelines and are fit on training folds only—no global normalization. Time/frequency features are computed per window from its own data; phase segmentation relies on trial metadata rather than labels. Although 50% overlap creates correlated samples, subject-wise grouping ensures correlated windows never cross folds, so this is not leakage. The only residual risk is model selection bias from comparing LR/SVM/RF/XGB on the same CV; if needed, use nested CV or a held-out set of subjects for the final estimate.
