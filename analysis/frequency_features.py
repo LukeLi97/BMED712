@@ -5,19 +5,19 @@ from typing import Dict, Iterable, List, Sequence, Tuple
 import numpy as np
 
 
-def _rfft_power(x: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def _rfft_power(x: np.ndarray, fs: float) -> Tuple[np.ndarray, np.ndarray]:
     """Return (freqs, power) for rFFT of zero-mean signal x.
 
-    Power is magnitude-squared spectrum (no density scaling). Frequencies in Hz
-    require caller to pass a correct sampling rate when interpreting band edges.
+    Power is magnitude-squared spectrum (no density scaling).
     """
     x = np.asarray(x, dtype=float)
-    if x.size <= 1:
+    if x.size <= 1 or fs <= 0:
         return np.array([]), np.array([])
     x = np.nan_to_num(x - np.nanmean(x))
     X = np.fft.rfft(x)
     P = (X.real ** 2 + X.imag ** 2)
-    return P, X  # placeholder to keep signature consistent
+    freqs = np.fft.rfftfreq(x.size, d=1.0 / fs)
+    return freqs, P
 
 
 def rfft_freqs(n: int, fs: float) -> np.ndarray:
@@ -82,3 +82,64 @@ __all__ = [
     "rfft_freqs",
 ]
 
+
+# -----------------------------
+# Filterbank (frequency-windowing)
+# -----------------------------
+
+def _make_triangular_filterbank(freqs: np.ndarray, n_bands: int, fmax: float) -> np.ndarray:
+    """Make a simple triangular filterbank up to fmax (inclusive).
+
+    Returns weights of shape [n_bands, freqs.size]. Bands are linearly spaced in [0, fmax].
+    """
+    if n_bands <= 0 or freqs.size == 0:
+        return np.zeros((0, freqs.size), dtype=float)
+    fmax = float(max(1e-6, fmax))
+    edges = np.linspace(0.0, fmax, num=n_bands + 2)
+    W = np.zeros((n_bands, freqs.size), dtype=float)
+    for b in range(n_bands):
+        lo, ctr, hi = edges[b], edges[b + 1], edges[b + 2]
+        # rising slope lo->ctr
+        rising = (freqs >= lo) & (freqs <= ctr)
+        falling = (freqs > ctr) & (freqs <= hi)
+        if ctr > lo:
+            W[b, rising] = (freqs[rising] - lo) / (ctr - lo)
+        if hi > ctr:
+            W[b, falling] = (hi - freqs[falling]) / (hi - ctr)
+    # normalize each band so that sum of weights is 1
+    s = W.sum(axis=1, keepdims=True)
+    s[s == 0.0] = 1.0
+    W = W / s
+    return W
+
+
+def add_filterbank_features(
+    x: np.ndarray,
+    fs: float,
+    prefix: str,
+    n_bands: int = 16,
+    fmax: float = 20.0,
+) -> Dict[str, float]:
+    """Compute simple triangular filterbank energies on the rFFT power spectrum.
+
+    This provides a fixed "frequency windowing" across bands for each window.
+    """
+    freqs, P = _rfft_power(x, fs)
+    if P.size == 0:
+        return {}
+    W = _make_triangular_filterbank(freqs, int(n_bands), float(fmax))
+    if W.size == 0:
+        return {}
+    energies = W @ P[: freqs.size]
+    out: Dict[str, float] = {}
+    for i, e in enumerate(energies, 1):
+        out[f"{prefix}__fb_{i:02d}"] = float(e)
+    # add a couple of ratios for robustness
+    if energies.size >= 2:
+        out[f"{prefix}__fb_ratio_01_02"] = float(energies[0] / energies[1]) if energies[1] != 0 else float("nan")
+    if energies.size >= 3:
+        out[f"{prefix}__fb_ratio_02_03"] = float(energies[1] / energies[2]) if energies[2] != 0 else float("nan")
+    return out
+
+
+__all__.extend(["add_filterbank_features"])
