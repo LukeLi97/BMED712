@@ -31,6 +31,29 @@ def list_trials(base: Path) -> List[str]:
     return trials
 
 
+def choose_balanced_trials(base: Path, per_group) -> List[str]:
+    if per_group is None:
+        return list_trials(base)
+    out: List[str] = []
+    for top in ["healthy", "ortho", "neuro"]:
+        top_path = base / top
+        if not top_path.exists():
+            continue
+        acc: List[str] = []
+        for cohort in sorted(p for p in top_path.iterdir() if p.is_dir()):
+            for subj in sorted(p for p in cohort.iterdir() if p.is_dir()):
+                for tr in sorted(p for p in subj.iterdir() if p.is_dir()):
+                    acc.append(tr.name)
+                    if len(acc) >= per_group:
+                        break
+                if len(acc) >= per_group:
+                    break
+            if len(acc) >= per_group:
+                break
+        out.extend(acc)
+    return out
+
+
 def run_sweep_freq(
     base_path: str,
     out_dir: str,
@@ -45,7 +68,7 @@ def run_sweep_freq(
     out = Path(out_dir)
     ensure_dirs(out)
 
-    trials = list_trials(base)
+    trials = choose_balanced_trials(base, None)
     if not trials:
         raise SystemExit("No trials found under dataset/data")
 
@@ -117,6 +140,7 @@ def main():
     ap.add_argument("--sensors", default="RF,ALL")
     ap.add_argument("--bands", default="0-3,3-8,8-15")
     ap.add_argument("--subdir", default="windows_freq")
+    ap.add_argument("--limit", type=int, default=None, help="Approx total trials (balanced per group)")
     ap.add_argument("--phases", default="pre_uturn,uturn,post_uturn,gait_full")
     args = ap.parse_args()
 
@@ -133,7 +157,19 @@ def main():
         bands.append((float(lo), float(hi)))
 
     phases = [p.strip() for p in str(args.phases).split(",") if p.strip()]
-    run_sweep_freq(args.data, args.out, wins, ovs, sens, bands, out_subdir=args.subdir, phases=phases)
+    # pass a limited trial set to run_sweep_freq by temporarily overriding list_trials
+    base = Path(args.data)
+    per = None if args.limit is None else max(1, int(args.limit) // 3)
+    trials = choose_balanced_trials(base, per)
+    # monkey-patch within local scope
+    _orig_list_trials = list_trials
+    def _patched_list_trials(_):
+        return trials
+    globals()['list_trials'] = _patched_list_trials
+    try:
+        run_sweep_freq(args.data, args.out, wins, ovs, sens, bands, out_subdir=args.subdir, phases=phases)
+    finally:
+        globals()['list_trials'] = _orig_list_trials
 
 
 if __name__ == "__main__":

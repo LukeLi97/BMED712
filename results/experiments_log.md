@@ -29,3 +29,9 @@ All times in local time, 2026-02-23.
 ## 12:30 – Documentation
 - Updated brief report with leakage handling (EN) and small-window meaning for patient cohorts (CN/EN).
 - Git: commits 025db35 and earlier (docs updates) pushed to origin/main.
+
+## 13:10 – Frequency windowing (gait_full 3.0s@50%)
+- What: Ran narrow 0–20 Hz bands (10x 2-Hz) on RF, gait_full, using full features table.
+- Why: Test finer spectral resolution near cadence/harmonics.
+- Result (subsampled quick CV): BAcc≈0.750, Macro‑F1≈0.730 (SVM). Full-table CV pending.
+- Next: Add 16-band triangular filterbank and compare to narrow bands; then integrate trial‑level voting.
