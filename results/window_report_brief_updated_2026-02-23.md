@@ -19,6 +19,17 @@
 - uturn（50%，时间域）：2.56 s → BAcc≈0.587（LR）；3.0 s → ≈0.600（SVM）。
 - uturn（50%，时频）：6.0 s → BAcc≈0.932（LR）。
 
+## 较小窗口的具体含义（面向患者人群）
+- 研究对象为神经/骨科等患者，步速更慢、步态变异更大，步行周期（stride）往往长于健康人：约 1.33–2.0 s（60–90 步/分）。
+- 在 fs≈100 Hz 下：
+  - 1.00 s ≈ 0.5–0.75 个 stride；Δf≈1.00 Hz。优点：高时间分辨率，敏感于瞬时事件；风险：对慢步态不足一个完整周期，频域分辨率偏粗。
+  - 1.28 s ≈ 0.64–0.96 个 stride；Δf≈0.78 Hz。更接近一个完整 stride（当步频较快时）。
+  - 2.56 s ≈ 1.28–1.92 个 stride；Δf≈0.39 Hz。提供多步上下文且仍较“平稳”，是小窗中的更稳健选择。
+  - 3.00 s ≈ 1.5–2.25 个 stride；在本数据上对 gait_full 最优（BAcc≈0.891）。
+  - 4.00 s ≈ 2–3 个 stride；在 pre/post‑u‑turn 上最优（BAcc≈0.900/0.890）。
+  - 6.00 s ≈ 3–4.5 个 stride；结合频带特征最利于 u‑turn（BAcc≈0.932）。
+- 实务建议（患者）：窗口尽量覆盖≥1 个完整 stride；慢步态或步态波动大时，可取 2–3 个 stride 的窗口并配合 50% 重叠以增强鲁棒性；若需降低样本相关性，pre/post‑u‑turn 可选 25% 重叠。
+
 ## 解读与取舍
 - 小窗口（≤2.56 s）提升了时间分辨率，能更敏感地捕捉短暂不对称，但在跨受试者分类时 BAcc 多数低于 3–4 s，因为频率分辨率与稳态步态上下文不足。
 - 2.56 s 在 50% overlap 下对 post_uturn 与 pre_uturn 有一定优势（相对 3.0 s），但仍不及 4.0 s @ 25% 的总体最佳；gait_full 则 3.0 s 更稳健。
@@ -57,7 +68,17 @@ Recommendations:
 - 2.56 s @ 50% can beat 3.0 s @ 50% in pre/post_uturn but still falls short of 4.0 s @ 25% overall; 3.0 s @ 50% is most stable for gait_full.
 - uturn benefits from longer context + frequency bands; 6.0 s + bands clearly superior to any time-only small window.
 
+## What small windows mean for patient cohorts
+- Our participants are neurological/orthopedic patients with slower speed and higher variability; stride time is often 1.33–2.0 s (60–90 steps/min), longer than healthy adults.
+- With fs≈100 Hz:
+  - 1.00 s ≈ 0.5–0.75 strides; Δf≈1.00 Hz. High temporal resolution but may miss a full stride in slow gait; coarse spectral resolution.
+  - 1.28 s ≈ 0.64–0.96 strides; Δf≈0.78 Hz. Closer to one full stride at moderate/fast cadence.
+  - 2.56 s ≈ 1.28–1.92 strides; Δf≈0.39 Hz. Adds multi‑step context while preserving stationarity—more robust among small windows.
+  - 3.00 s ≈ 1.5–2.25 strides; best for gait_full (BAcc≈0.891) in our data.
+  - 4.00 s ≈ 2–3 strides; best for pre/post‑u‑turn (BAcc≈0.900/0.890).
+  - 6.00 s ≈ 3–4.5 strides; with band features it is best for u‑turn (BAcc≈0.932).
+- Practical rule (patients): ensure ≥1 full stride per window; for slow/variable gait, use 2–3‑stride windows with 50% overlap for robustness; use 25% in stationary pre/post‑u‑turn to reduce correlation.
+
 ## Reproducibility
 - Additional evaluations used existing tables under `results/windows/*/features_win{win}ms_ov50.csv` and `results/windows_features_*_{2560}ms.csv`.
 - Prior summaries: `results/window_experiments_summary.csv`, `results/window_report.md`, `results/window_report_freq.md`.
-
