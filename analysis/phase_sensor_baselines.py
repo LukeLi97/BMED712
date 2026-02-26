@@ -54,8 +54,39 @@ def macro_ovr_auc(y_true: np.ndarray, prob: np.ndarray, classes: List[str]) -> f
         return float("nan")
 
 
+def _safe_n_splits(y: pd.Series, groups: pd.Series, target: int = 5) -> int:
+    """Return the maximum feasible n_splits given class/group membership.
+
+    We need at least one member of every class in each split for
+    StratifiedGroupKFold. That requires the number of unique groups per class
+    to be >= n_splits. This helper computes the minimum across classes and
+    caps at `target` (default 5).
+    """
+    try:
+        df = pd.DataFrame({"y": y.astype(str), "g": groups.astype(str)})
+        # count unique groups per class
+        per_class = df.drop_duplicates().groupby("y")["g"].nunique()
+        min_groups = int(per_class.min()) if not per_class.empty else 0
+        return max(2, min(target, min_groups))
+    except Exception:
+        return max(2, min(target, 3))
+
+
 def eval_models(X: pd.DataFrame, y: pd.Series, groups: pd.Series) -> Tuple[str, Dict[str, float]]:
-    skf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42)
+    n_splits = _safe_n_splits(y, groups, target=5)
+    if n_splits < 2:
+        # Not enough subjects per class to split
+        return "LR", {
+            "acc_mean": float("nan"),
+            "acc_std": float("nan"),
+            "bacc_mean": float("nan"),
+            "bacc_std": float("nan"),
+            "macro_f1_mean": float("nan"),
+            "macro_f1_std": float("nan"),
+            "auc_macro_ovr_mean": float("nan"),
+            "auc_macro_ovr_std": float("nan"),
+        }
+    skf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=42)
     classes = sorted(y.unique().tolist())
     models = {
         "LR": make_pipeline(
