@@ -1,0 +1,10 @@
+{
+  "classes": "healthy,neuro,ortho",
+  "phase": "gait_full",
+  "win": 3.0,
+  "overlap": 0.5,
+  "bacc_mean": 0.6625685629260099,
+  "bacc_std": 0.07023093935570597,
+  "macro_f1_mean": 0.6487393108336185,
+  "macro_f1_std": 0.04171661828450418
+}

@@ -7,6 +7,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 import torch
 import torch.nn as nn
+from typing import Optional
 from sklearn.metrics import balanced_accuracy_score, f1_score
 from sklearn.model_selection import StratifiedGroupKFold
 
@@ -17,6 +18,16 @@ if str(REPO_ROOT) not in sys.path:
 from analysis.datasets.window_raw import WindowedRawIndex, WindowedRawDataset, list_trials  # type: ignore
 from analysis.models.mamba_ts import TinyMambaTS  # type: ignore
 
+# Optional alternative backbones (TCN / Transformer)
+try:
+    from analysis.models.conv_tcn import TinyTCN  # type: ignore
+except Exception:
+    TinyTCN = None  # type: ignore
+try:
+    from analysis.models.transformer_ts import TinyTransformerTS  # type: ignore
+except Exception:
+    TinyTransformerTS = None  # type: ignore
+
 
 def seed_all(seed: int = 42) -> None:
     import random
@@ -26,7 +37,7 @@ def seed_all(seed: int = 42) -> None:
     torch.cuda.manual_seed_all(seed)
 
 
-def get_device(name: str | None = None) -> torch.device:
+def get_device(name: Optional[str] = None) -> torch.device:
     if name == "mps" and torch.backends.mps.is_available():
         return torch.device("mps")
     if name == "cuda" and torch.cuda.is_available():
@@ -83,10 +94,36 @@ def eval_fold(model: nn.Module, device: torch.device, X_idx: List[int], dataset:
     return float(bacc), float(f1)
 
 
+def _list_trials_by_group(base: Path) -> Dict[str, List[str]]:
+    groups: Dict[str, List[str]] = {"healthy": [], "ortho": [], "neuro": []}
+    for top in ["healthy", "ortho", "neuro"]:
+        tp = base / top
+        if not tp.exists():
+            continue
+        for cohort in sorted(p for p in tp.iterdir() if p.is_dir()):
+            for subj in sorted(p for p in cohort.iterdir() if p.is_dir()):
+                for tr in sorted(p for p in subj.iterdir() if p.is_dir()):
+                    groups.setdefault(top, []).append(tr.name)
+    return groups
+
+
+def _choose_balanced_trials(base: Path, per_group: Optional[int]) -> List[str]:
+    by = _list_trials_by_group(base)
+    out: List[str] = []
+    for g in ["healthy", "ortho", "neuro"]:
+        arr = by.get(g, [])
+        if not arr:
+            continue
+        k = len(arr) if per_group is None else min(per_group, len(arr))
+        out.extend(arr[:k])
+    return out
+
+
 def run_cv(base: str, phase: str, win: float, overlap: float, device_name: str,
-           d_model: int = 64, n_layers: int = 2, epochs: int = 20, batch: int = 32) -> Dict[str, float]:
+           d_model: int = 64, n_layers: int = 2, epochs: int = 20, batch: int = 32,
+           arch: str = "gru", limit_per_group: Optional[int] = None) -> Dict[str, float]:
     base_path = Path(base)
-    trials = list_trials(base_path)
+    trials = _choose_balanced_trials(base_path, limit_per_group)
     idx = WindowedRawIndex(base, trials, phase, win, overlap)
     ds = WindowedRawDataset(idx)
     labels = np.array(ds.index.labels())
@@ -104,7 +141,15 @@ def run_cv(base: str, phase: str, win: float, overlap: float, device_name: str,
         # fold-wise normalization using train indices only
         ds.compute_channel_stats(tr.tolist())
         # model per fold (small enough)
-        model = TinyMambaTS(in_chans=len(ds.channels), n_classes=len(classes), d_model=d_model, n_layers=n_layers, dropout=0.1)
+        if arch == "mamba":
+            model = TinyMambaTS(in_chans=len(ds.channels), n_classes=len(classes), d_model=d_model, n_layers=n_layers, dropout=0.1)
+        elif arch == "tcn" and TinyTCN is not None:
+            model = TinyTCN(in_chans=len(ds.channels), n_classes=len(classes), d_model=d_model, n_layers=n_layers, dropout=0.1)
+        elif arch == "transformer" and TinyTransformerTS is not None:
+            model = TinyTransformerTS(in_chans=len(ds.channels), n_classes=len(classes), d_model=d_model, n_layers=n_layers, dropout=0.1)
+        else:
+            # default fallback: GRU inside TinyMambaTS
+            model = TinyMambaTS(in_chans=len(ds.channels), n_classes=len(classes), d_model=d_model, n_layers=n_layers, dropout=0.1, use_mamba=False)
         model.to(device)
         train_fold(model, device, tr.tolist(), ds, y_map, epochs=epochs, batch=batch)
         bacc, f1 = eval_fold(model, device, te.tolist(), ds, y_map)
@@ -135,6 +180,7 @@ def main():
     ap.add_argument("--epochs", type=int, default=20)
     ap.add_argument("--batch", type=int, default=32)
     ap.add_argument("--out", default="results/artifacts")
+    ap.add_argument("--arch", default="gru", choices=["gru","mamba","tcn","transformer"])
     args = ap.parse_args()
 
     seed_all(42)
@@ -148,6 +194,7 @@ def main():
         n_layers=args.n_layers,
         epochs=args.epochs,
         batch=args.batch,
+        arch=args.arch,
     )
 
     out_dir = Path(args.out)
@@ -159,4 +206,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
