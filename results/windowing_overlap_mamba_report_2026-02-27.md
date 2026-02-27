@@ -38,8 +38,24 @@ Audience: course instructor. This report consolidates what we did this week on t
 - Time‑only vs Time+Frequency (RF, best per phase):  
   ![Time vs Time+Frequency](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/phase_time_vs_timefreq_rf.png)
 
+- Overlap triplets (0% vs 25% vs 50%) — matched windows:
+  - pre_uturn RF 3.0 s:  
+    ![pre_uturn RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_3000ms.png)
+  - pre_uturn RF 4.0 s:  
+    ![pre_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_4000ms.png)
+  - post_uturn RF 4.0 s:  
+    ![post_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_post_uturn_RF_4000ms.png)
+  - gait_full RF 3.0 s:  
+    ![gait_full RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_gait_full_RF_3000ms.png)
+
 ## Leakage handling (recap)
 We use subject‑wise StratifiedGroupKFold (5 folds) so that all windows from the same subject stay in a single fold; no cross‑fold subject leakage. Preprocessing steps (imputation/standardization) live inside sklearn Pipelines and are fit on training folds only—no global normalization. Time/frequency features are computed per window from its own data; phase segmentation relies on trial metadata rather than labels. Although 50% overlap creates correlated samples, subject‑wise grouping ensures correlated windows never cross folds; this is not leakage. The only residual risk is model‑selection bias (same CV used to compare LR/SVM/RF/XGB); a nested CV or held‑out subjects set can be used for the final estimate if needed.
+
+## Terminology (what “Bands” and “Filterbank” mean)
+- Bands: fixed frequency intervals (e.g., 0–3, 3–8, 8–15 Hz). For each time window we compute the rFFT power and sum power inside each interval to obtain band‑power features and a few ratios; they reflect energy in clinically meaningful ranges (very‑low to low cadence‑related motion, mid‑frequency turning dynamics, etc.).
+- Filterbank: a set of triangular frequency windows linearly spaced from 0 to fmax (e.g., 16 bands up to 20 Hz). We multiply the spectrum by these weighting curves and sum to get per‑band energies; this is a learn‑free, robust “frequency windowing” that captures coarse spectral shape without tuning cutpoints.
+
+Why uturn benefits: turning requires sustained orientation/curvature changes and multi‑step integration; longer windows (6 s) improve frequency resolution (Δf≈0.17 Hz at fs≈100 Hz) and the band/filterbank features emphasize the characteristic spectral footprint of turning, hence a large jump in BAcc (≈0.932). Other phases are more quasi‑stationary: their discriminative cues are already well captured by time‑domain summaries at shorter windows; adding many spectral features may add noise and regularization burden without improved signal.
 
 ## Tiny Mamba (status)
 - Code: `analysis/train_mamba_windows.py` (dataset/model under `analysis/datasets` and `analysis/models`). `mamba-ssm` is not available on this Mac; the model falls back to a tiny GRU backbone with the same interface.
@@ -81,6 +97,12 @@ We use subject‑wise StratifiedGroupKFold (5 folds) so that all windows from th
 - 现状：Mac 无 `mamba-ssm`，自动回退 GRU 小模型；gait_full 3 s@50% 的 1‑epoch 基线 BAcc≈0.663。  
 - 计划：在 Window/Overlap 报告定稿后，按 gait_full → pre → post → uturn 启动 12‑epoch 训练，并在总报告中加入端到端模型对照表与混淆矩阵。
 
+## 术语说明（Band 与滤波银行）
+- Band（频带）：为每个时间窗的频谱划定固定区间（如 0–3/3–8/8–15 Hz），计算区间内的谱能量与若干比值，用于表征不同频段的运动能量分布。
+- 滤波银行（filterbank）：在 0–fmax（如 20 Hz）范围内线性划分若干三角带通窗，对频谱做加权求和得到每带能量；这是“无训练参数的频率窗口化”，可稳健表征谱形状。
+
+为什么 uturn 提升显著：转身需要更长上下文与持续的角速度/曲率变化；6 s 窗提供更细的频率分辨率（fs≈100 Hz 时 Δf≈0.17 Hz），频带/滤波银行突出该阶段的谱特征，因此 BAcc 能显著提升至 ≈0.932。其他相位更接近稳态，较短时间窗的时间域统计已能覆盖主要差异，频域特征的边际收益有限，甚至会带来轻微过拟合风险。
+
 ## 可视化
 - 非重叠 vs 重叠（示例）：
   - pre_uturn RF：  
@@ -94,9 +116,18 @@ We use subject‑wise StratifiedGroupKFold (5 folds) so that all windows from th
 - 时间 vs 时频（RF，按相位最优）：  
   ![Time vs Time+Frequency](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/phase_time_vs_timefreq_rf.png)
 
+- 三重对比（0% vs 25% vs 50%）——匹配窗口：
+  - pre_uturn RF 3.0 s：  
+    ![pre_uturn RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_3000ms.png)
+  - pre_uturn RF 4.0 s：  
+    ![pre_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_4000ms.png)
+  - post_uturn RF 4.0 s：  
+    ![post_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_post_uturn_RF_4000ms.png)
+  - gait_full RF 3.0 s：  
+    ![gait_full RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_gait_full_RF_3000ms.png)
+
 ## 复现与数据对象
 - 0% 报告：`results/window_overlap_0_report.md`  
 - 频率报告：`results/window_report_freq.md`  
 - 0% 对齐表：`results_ov0/overlap_matched_compare.csv`  
 - 频率汇总表：`results/window_experiments_freq_summary.csv`
-
