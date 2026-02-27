@@ -1,5 +1,21 @@
 # Weekly Update — Windowing/Overlap and Tiny Mamba (English)
 
+## At‑a‑Glance (for instructor)
+- What we did and why
+  - Re‑ran non‑overlapping (0%) windows across phases to test robustness and rule out overlap‑inflated scores (subject‑wise grouped CV, in‑fold preprocessing).
+  - Evaluated frequency windowing (bands + filterbank) on the same time windows to see when spectral cues add value beyond time‑domain summaries.
+  - Kept a deployment‑minded single‑sensor focus (RF) and used the previously identified best time windows per phase as anchors for fair comparison.
+- What we found (useful factors for higher accuracy)
+  - Phase‑specific time windows remain the strongest driver: pre/post = 4.0 s @ 25%; gait_full = 3.0 s @ 50%; uturn = 6.0 s @ 50%.
+  - Frequency features help uturn substantially: 6.0 s @ 50% + bands/filterbank → BAcc ≈ 0.932 (RF/ALL), clearly above time‑only small windows.
+  - Using a single best sensor (RF) matches or exceeds ALL in most phase‑level settings, especially with small windows (less noise, more consistency).
+  - Overlap tuning matters but does not create leakage: 0% vs 25–50% yields similar BAcc in matched 3.0 s settings (pre_uturn nearly identical; gait_full small drop), confirming stability.
+- Why these worked (our hypotheses)
+  - Window length aligns with phase dynamics: longer context for turning (uturn) improves frequency resolution and captures sustained angular changes; shorter windows suffice for quasi‑stationary gait segments.
+  - Bands/filterbank emphasize the spectral footprint of turning (curvature/heading changes) and suppress high‑variance, short‑term noise.
+  - RF (right‑foot) captures discriminative gyroscope/acceleration cues tightly linked to gait events with lower between‑subject variability than multi‑IMU fusion.
+  - Subject‑wise grouping and in‑fold preprocessing prevent leakage; improvements reflect true generalization, not split artifacts.
+
 Audience: course instructor. This report consolidates what we did this week on time/frequency windowing and the non‑overlapping (0%) check, plus a brief status of the Tiny Mamba runs on Mac (MPS). Links and figures point to reproducible artifacts in the repo.
 
 ## Executive Summary
@@ -71,6 +87,22 @@ Why uturn benefits: turning requires sustained orientation/curvature changes and
 ---
 
 # 每周更新——窗口/重叠与 Tiny Mamba（中文）
+
+## 一目了然（给老师）
+- 我们做了什么、为什么做
+  - 全面复跑 0% 重叠，验证稳健性并排除“重叠虚高”的可能（受试者分组 CV、折内预处理）。
+  - 在相同时间窗内开启频域（频带 + 滤波银行），检验频谱信息在何处带来增益。
+  - 以部署友好的单传感器（RF）为主体，对照各相位的最佳时间窗，保证公平可比。
+- 我们的具体发现（对提升准确率有用的因素）
+  - 相位专属的时间窗是首要驱动：pre/post = 4.0 s@25%；gait_full = 3.0 s@50%；uturn = 6.0 s@50%。
+  - 频域仅在 uturn 显著增益：6.0 s@50% + 频带/滤波银行 → BAcc≈0.932（RF/ALL），明显高于仅时间小窗。
+  - 单一最佳传感器（RF）在多数相位/小窗设置中不逊于 ALL（更少噪声、更一致）。
+  - 重叠比例影响有限且不致泄漏：3.0 s 匹配时 0% 与 25–50% 的 BAcc 接近（pre_uturn 基本一致、gait_full 小幅下降）。
+- 背后的原因（我们的解释）
+  - 窗长与相位动力学匹配：uturn 需要更长上下文以提高频率分辨率、刻画持续角速度变化；较稳态相位用更短窗已足够。
+  - 频带/滤波银行突出转身的谱形特征并抑制短时噪声，因此在 uturn 获益显著；其他相位的边际收益有限。
+  - RF 近源捕获与步态事件强相关的角速度/加速度线索，跨人方差更小，多 IMU 融合并不一定稳健提升。
+  - 按受试者分组与折内预处理规避泄漏，性能提升反映真实泛化而非切分偏差。
 
 面向老师的阶段性汇报。本周完成了时间/频率窗口的系统复核与 0% 重叠验证，并给出 Tiny Mamba 在 Mac（MPS）上的初步结果。
 
