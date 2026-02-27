@@ -27,9 +27,15 @@ Source CSV: `results_ov0/overlap_matched_compare.csv`. Values are BAcc (fold‑m
 Notes:
 - uturn with 3.0–6.0 s and 0% overlap yields very few valid windows in some trials; 3.0 s @ 0% produced unstable/invalid scores, so we do not compare that row. Our prior best for uturn uses 6.0 s @ 50% + frequency bands (BAcc ≈ 0.932), which cannot be fairly matched at 0% due to segment length constraints.
 
-## Quick sanity plots
-- pre_uturn (0%): ![pre_uturn RF](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_pre_uturn_RF.png) ![pre_uturn ALL](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_pre_uturn_ALL.png)
-- uturn (0% small windows): ![uturn RF](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_uturn_RF.png) ![uturn ALL](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_uturn_ALL.png)
+## Overlap triplets (0% vs 25% vs 50%) — matched windows
+- pre_uturn RF 3.0 s: ![pre_uturn RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_3000ms.png)
+- pre_uturn RF 4.0 s: ![pre_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_4000ms.png)
+- pre_uturn ALL 3.0 s: ![pre_uturn ALL 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_ALL_3000ms.png)
+- pre_uturn ALL 4.0 s: ![pre_uturn ALL 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_ALL_4000ms.png)
+- post_uturn RF 4.0 s: ![post_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_post_uturn_RF_4000ms.png)
+- post_uturn ALL 4.0 s: ![post_uturn ALL 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_post_uturn_ALL_4000ms.png)
+- gait_full RF 3.0 s: ![gait_full RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_gait_full_RF_3000ms.png)
+- gait_full ALL 3.0 s: ![gait_full ALL 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_gait_full_ALL_3000ms.png)
 
 ## Interpretation (answers to the professor’s question)
 - If accuracy stays almost the same → results are strong: this holds for pre_uturn and gait_full when we compare 3.0 s windows (Δ ≤ 0.012). Conclusion: overlap did not inflate these phases.
