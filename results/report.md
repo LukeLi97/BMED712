@@ -62,6 +62,7 @@ Headline findings (RF sensor):
 
 
 
+
 <!-- AUTO_REPORT:BEGIN -->
 ## Executive Summary
 - Best full-sensor model: SVM (BAcc≈0.809).
@@ -73,27 +74,27 @@ Headline findings (RF sensor):
 | all | LR | 0.748±0.051 | 0.753±0.055 |
 | all | RF | 0.810±0.030 | 0.801±0.032 |
 | all | SVM | 0.816±0.049 | 0.809±0.052 |
-| all | XGB | 0.805±0.028 | 0.792±0.028 |
+| all | XGB | 0.808±0.028 | 0.797±0.029 |
 | feet | LR | 0.728±0.077 | 0.732±0.081 |
 | feet | RF | 0.768±0.052 | 0.764±0.056 |
 | feet | SVM | 0.793±0.053 | 0.792±0.060 |
-| feet | XGB | 0.798±0.030 | 0.797±0.037 |
+| feet | XGB | 0.808±0.033 | 0.805±0.038 |
 | he | LR | 0.722±0.051 | 0.732±0.058 |
 | he | RF | 0.785±0.038 | 0.774±0.040 |
 | he | SVM | 0.786±0.044 | 0.782±0.048 |
-| he | XGB | 0.763±0.039 | 0.759±0.041 |
+| he | XGB | 0.765±0.045 | 0.761±0.048 |
 | lb | LR | 0.737±0.047 | 0.747±0.038 |
 | lb | RF | 0.709±0.012 | 0.702±0.009 |
 | lb | SVM | 0.758±0.043 | 0.763±0.037 |
-| lb | XGB | 0.740±0.024 | 0.739±0.032 |
+| lb | XGB | 0.743±0.022 | 0.742±0.029 |
 | lf | LR | 0.750±0.056 | 0.765±0.065 |
 | lf | RF | 0.753±0.049 | 0.750±0.052 |
 | lf | SVM | 0.761±0.057 | 0.769±0.061 |
-| lf | XGB | 0.734±0.065 | 0.734±0.068 |
+| lf | XGB | 0.736±0.071 | 0.737±0.074 |
 | rf | LR | 0.766±0.064 | 0.771±0.074 |
 | rf | RF | 0.761±0.049 | 0.754±0.046 |
 | rf | SVM | 0.793±0.041 | 0.792±0.044 |
-| rf | XGB | 0.784±0.034 | 0.783±0.037 |
+| rf | XGB | 0.795±0.031 | 0.794±0.034 |
 
 
 ## Step 2 — Sensor Minimization (Markdown)
@@ -134,6 +135,23 @@ Headline findings (RF sensor):
 
 
 
+
+
+## Sensor minimization (exhaustive)
+- Criterion: minimal k with Macro-F1 within 0.02 of full-sensor Macro-F1 (subject-wise 5-fold).
+- Recommended: k=2, sensors=['LB', 'RF'], model=svm (Macro-F1=0.813, BAcc=0.811).
+
+## Condition shift (hardware)
+- train on: technoconcept, test on: xsens, LR balanced acc=0.331
+
+## Leave-one-pathology-subtype-out (3-class retrospective check)
+- ortho holdout=ACL: recall=0.167 on 60 trials
+- ortho holdout=HOA: recall=0.757 on 74 trials
+- ortho holdout=KOA: recall=0.679 on 78 trials
+- neuro holdout=CIPN: recall=0.898 on 98 trials
+- neuro holdout=CVA: recall=0.883 on 128 trials
+- neuro holdout=PD: recall=0.825 on 160 trials
+- neuro holdout=RIL: recall=0.734 on 398 trials
 
 ## Sensor minimization (exhaustive)
 - Criterion: minimal k with Macro-F1 within 0.02 of full-sensor Macro-F1 (subject-wise 5-fold).

@@ -1,0 +1,5 @@
+phase,best_win_s_by_RF,best_bacc_by_RF
+gait_full,3.0,0.864033160110866
+post_uturn,3.0,0.7322714190076283
+pre_uturn,3.0,0.8489417989417989
+uturn,2.56,0.45833333333333337

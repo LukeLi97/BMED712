@@ -24,9 +24,9 @@
     "balanced_acc_std": 0.036623094248732335
   },
   "xgb": {
-    "macro_f1_mean": 0.7401430439508798,
-    "macro_f1_std": 0.023930150926453033,
-    "balanced_acc_mean": 0.7392464341820428,
-    "balanced_acc_std": 0.031797121010235456
+    "macro_f1_mean": 0.742768013623565,
+    "macro_f1_std": 0.021655698323114963,
+    "balanced_acc_mean": 0.7416363060485882,
+    "balanced_acc_std": 0.02939183427082957
   }
 }

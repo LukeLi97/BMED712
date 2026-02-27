@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-02-23T12:03:11.734381",
+  "entries": [
+    {
+      "phase": "pre_uturn",
+      "win_ms": 1000,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win1000ms_ov50.csv",
+      "n_rows": 26703,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 1280,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win1280ms_ov50.csv",
+      "n_rows": 117,
+      "n_cols": 223
+    }
+  ]
+}

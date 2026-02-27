@@ -216,6 +216,70 @@
       "path": "windows/gait_full/features_win6000ms_ov25.csv",
       "n_rows": 302,
       "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 1280,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win1280ms_ov50.csv",
+      "n_rows": 489,
+      "n_cols": 223
+    },
+    {
+      "phase": "pre_uturn",
+      "win_ms": 2560,
+      "overlap": 0.5,
+      "path": "windows/pre_uturn/features_win2560ms_ov50.csv",
+      "n_rows": 208,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 1000,
+      "overlap": 0.5,
+      "path": "windows/post_uturn/features_win1000ms_ov50.csv",
+      "n_rows": 709,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 1280,
+      "overlap": 0.5,
+      "path": "windows/post_uturn/features_win1280ms_ov50.csv",
+      "n_rows": 538,
+      "n_cols": 223
+    },
+    {
+      "phase": "post_uturn",
+      "win_ms": 2560,
+      "overlap": 0.5,
+      "path": "windows/post_uturn/features_win2560ms_ov50.csv",
+      "n_rows": 239,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 1000,
+      "overlap": 0.5,
+      "path": "windows/gait_full/features_win1000ms_ov50.csv",
+      "n_rows": 1626,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 1280,
+      "overlap": 0.5,
+      "path": "windows/gait_full/features_win1280ms_ov50.csv",
+      "n_rows": 1253,
+      "n_cols": 223
+    },
+    {
+      "phase": "gait_full",
+      "win_ms": 2560,
+      "overlap": 0.5,
+      "path": "windows/gait_full/features_win2560ms_ov50.csv",
+      "n_rows": 591,
+      "n_cols": 223
     }
   ]
 }
