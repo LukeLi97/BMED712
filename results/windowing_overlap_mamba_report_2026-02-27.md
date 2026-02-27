@@ -42,15 +42,23 @@ Audience: course instructor. This report consolidates what we did this week on t
 - Time vs Time+Frequency (best per phase, RF): only uturn benefits strongly (≈0.932).
 
 ## Visuals
-- Non‑overlapping vs overlapped (examples):
-  - pre_uturn RF:  
-    ![pre_uturn RF](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_pre_uturn_RF.png)
-  - pre_uturn ALL:  
-    ![pre_uturn ALL](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_pre_uturn_ALL.png)
-  - uturn RF:  
-    ![uturn RF](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_uturn_RF.png)
-  - uturn ALL:  
-    ![uturn ALL](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_bacc_quick_uturn_ALL.png)
+- Overlap triplets (0% vs 25% vs 50%) — matched windows：
+  - pre_uturn RF 3.0 s：  
+    ![pre_uturn RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_3000ms.png)
+  - pre_uturn RF 4.0 s：  
+    ![pre_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_RF_4000ms.png)
+  - pre_uturn ALL 3.0 s：  
+    ![pre_uturn ALL 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_ALL_3000ms.png)
+  - pre_uturn ALL 4.0 s：  
+    ![pre_uturn ALL 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_pre_uturn_ALL_4000ms.png)
+  - post_uturn RF 4.0 s：  
+    ![post_uturn RF 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_post_uturn_RF_4000ms.png)
+  - post_uturn ALL 4.0 s：  
+    ![post_uturn ALL 4s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_post_uturn_ALL_4000ms.png)
+  - gait_full RF 3.0 s：  
+    ![gait_full RF 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_gait_full_RF_3000ms.png)
+  - gait_full ALL 3.0 s：  
+    ![gait_full ALL 3s](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/overlap_triplet_gait_full_ALL_3000ms.png)
 - Time‑only vs Time+Frequency (RF, best per phase):  
   ![Time vs Time+Frequency](/Users/test/Desktop/BMED712 Rehab/BMED712 Project 1_Track A/results/figures/phase_time_vs_timefreq_rf.png)
 
