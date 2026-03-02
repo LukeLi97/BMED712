@@ -1,0 +1,27 @@
+{
+  "tag": "3class_matched_sensor",
+  "n_features": 217,
+  "classes": [
+    "healthy",
+    "ortho",
+    "neuro"
+  ],
+  "lr": {
+    "macro_f1_mean": 0.7452469439493467,
+    "macro_f1_std": 0.0268493563388067,
+    "balanced_acc_mean": 0.7616392093738389,
+    "balanced_acc_std": 0.03183936138662564
+  },
+  "rf": {
+    "macro_f1_mean": 0.7943929288035203,
+    "macro_f1_std": 0.05073683084560811,
+    "balanced_acc_mean": 0.7960695884690554,
+    "balanced_acc_std": 0.06849188126205691
+  },
+  "svm": {
+    "macro_f1_mean": 0.8057654379171533,
+    "macro_f1_std": 0.02123171824610106,
+    "balanced_acc_mean": 0.8137995365475135,
+    "balanced_acc_std": 0.03957892016985363
+  }
+}

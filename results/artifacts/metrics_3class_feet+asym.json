@@ -1,0 +1,27 @@
+{
+  "tag": "3class_feet+asym",
+  "n_features": 120,
+  "classes": [
+    "healthy",
+    "ortho",
+    "neuro"
+  ],
+  "lr": {
+    "macro_f1_mean": 0.7350283551456218,
+    "macro_f1_std": 0.07982270739058919,
+    "balanced_acc_mean": 0.740555724243112,
+    "balanced_acc_std": 0.08221357593182574
+  },
+  "rf": {
+    "macro_f1_mean": 0.7697951321693063,
+    "macro_f1_std": 0.05042119174413715,
+    "balanced_acc_mean": 0.7655300576676185,
+    "balanced_acc_std": 0.053330781501842735
+  },
+  "svm": {
+    "macro_f1_mean": 0.7907667192176728,
+    "macro_f1_std": 0.052065598614866246,
+    "balanced_acc_mean": 0.7916385645063453,
+    "balanced_acc_std": 0.057809491485083526
+  }
+}
