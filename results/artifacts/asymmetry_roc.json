@@ -1,0 +1,26 @@
+{
+  "stride_absAI": {
+    "auc": 0.715802348336595,
+    "optimal_threshold": 0.0490777491628966,
+    "sensitivity": 0.5857142857142857,
+    "specificity": 0.8287671232876712,
+    "n_healthy": 70,
+    "n_pathological": 146
+  },
+  "step_absAI": {
+    "auc": 0.6338551859099804,
+    "optimal_threshold": 0.0799861195454151,
+    "sensitivity": 0.7571428571428571,
+    "specificity": 0.4726027397260274,
+    "n_healthy": 70,
+    "n_pathological": 146
+  },
+  "stride_abs_diff": {
+    "auc": 0.7030332681017613,
+    "optimal_threshold": 0.0649848484848485,
+    "sensitivity": 0.5571428571428572,
+    "specificity": 0.8356164383561644,
+    "n_healthy": 70,
+    "n_pathological": 146
+  }
+}
