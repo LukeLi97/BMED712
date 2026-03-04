@@ -1,0 +1,194 @@
+{
+  "total_features": 228,
+  "significant_p001": 145,
+  "significant_p01": 166,
+  "significant_p05": 182,
+  "direction_counts_sig05": {
+    "\u2228 valley-ortho": 73,
+    "\u2193 H>O>N": 67,
+    "\u2227 peak-ortho": 31,
+    "\u2191 H<O<N": 11
+  },
+  "top_features": [
+    {
+      "feature": "duration_s",
+      "direction": "\u2191 H<O<N",
+      "healthy_median": 10.666,
+      "ortho_median": 15.834375,
+      "neuro_median": 31.1,
+      "kw_p": 1.7043844361665633e-33,
+      "h_vs_n_concordance": 1.0
+    },
+    {
+      "feature": "RF_FreeAcc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 3.983051,
+      "ortho_median": 4.153535,
+      "neuro_median": 2.553622,
+      "kw_p": 3.21613820191008e-30,
+      "h_vs_n_concordance": 0.951
+    },
+    {
+      "feature": "RF_Acc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 3.983051,
+      "ortho_median": 4.153535,
+      "neuro_median": 2.553622,
+      "kw_p": 3.21613820191008e-30,
+      "h_vs_n_concordance": 0.951
+    },
+    {
+      "feature": "HE_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 2.357838,
+      "ortho_median": 2.840082,
+      "neuro_median": 1.346494,
+      "kw_p": 2.642588308340788e-29,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "LF_Acc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 4.058108,
+      "ortho_median": 4.107066,
+      "neuro_median": 2.659485,
+      "kw_p": 8.894338558588246e-29,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "LF_FreeAcc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 4.058108,
+      "ortho_median": 4.107066,
+      "neuro_median": 2.659485,
+      "kw_p": 8.894338558588246e-29,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "LF_FreeAcc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 3.261409,
+      "ortho_median": 3.423877,
+      "neuro_median": 2.029387,
+      "kw_p": 8.452956255815883e-27,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "LF_Acc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 3.261409,
+      "ortho_median": 3.423877,
+      "neuro_median": 2.029387,
+      "kw_p": 8.452956255815883e-27,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "RF_FreeAcc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 3.251777,
+      "ortho_median": 3.421675,
+      "neuro_median": 1.976006,
+      "kw_p": 2.0266236459594798e-26,
+      "h_vs_n_concordance": 0.944
+    },
+    {
+      "feature": "RF_Acc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 3.251777,
+      "ortho_median": 3.421675,
+      "neuro_median": 1.976006,
+      "kw_p": 2.0266236459594798e-26,
+      "h_vs_n_concordance": 0.944
+    },
+    {
+      "feature": "LB_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2193 H>O>N",
+      "healthy_median": 4.423264,
+      "ortho_median": 3.946388,
+      "neuro_median": 2.492473,
+      "kw_p": 9.907558477412905e-25,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "LB_Acc_Y__spec_centroid_hz",
+      "direction": "\u2193 H>O>N",
+      "healthy_median": 4.423264,
+      "ortho_median": 3.946388,
+      "neuro_median": 2.492473,
+      "kw_p": 9.907558477412905e-25,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "HE_FreeAcc_X__spec_centroid_hz",
+      "direction": "\u2228 valley-ortho",
+      "healthy_median": 1.553702,
+      "ortho_median": 1.501534,
+      "neuro_median": 2.192668,
+      "kw_p": 1.2219159286796665e-23,
+      "h_vs_n_concordance": 0.979
+    },
+    {
+      "feature": "HE_FreeAcc_Y__dom_freq_hz",
+      "direction": "\u2193 H>O>N",
+      "healthy_median": 1.693199,
+      "ortho_median": 1.631659,
+      "neuro_median": 0.826841,
+      "kw_p": 2.828625157766704e-23,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "LF_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 4.406706,
+      "ortho_median": 5.097143,
+      "neuro_median": 2.122089,
+      "kw_p": 8.48290708939213e-23,
+      "h_vs_n_concordance": 0.951
+    },
+    {
+      "feature": "LF_Acc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 4.406706,
+      "ortho_median": 5.097143,
+      "neuro_median": 2.122089,
+      "kw_p": 8.48290708939213e-23,
+      "h_vs_n_concordance": 0.951
+    },
+    {
+      "feature": "LB_Gyr_Y__spec_power",
+      "direction": "\u2191 H<O<N",
+      "healthy_median": 108196.417865,
+      "ortho_median": 123961.064791,
+      "neuro_median": 399887.441098,
+      "kw_p": 1.4689371137821395e-22,
+      "h_vs_n_concordance": 0.965
+    },
+    {
+      "feature": "RF_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 4.388937,
+      "ortho_median": 4.954534,
+      "neuro_median": 2.157901,
+      "kw_p": 1.7624002693170428e-22,
+      "h_vs_n_concordance": 0.951
+    },
+    {
+      "feature": "RF_Acc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "healthy_median": 4.388937,
+      "ortho_median": 4.954534,
+      "neuro_median": 2.157901,
+      "kw_p": 1.7624002693170428e-22,
+      "h_vs_n_concordance": 0.951
+    },
+    {
+      "feature": "HE_FreeAcc_X__dom_freq_hz",
+      "direction": "\u2228 valley-ortho",
+      "healthy_median": 0.859406,
+      "ortho_median": 0.773312,
+      "neuro_median": 1.748715,
+      "kw_p": 3.623305054918389e-21,
+      "h_vs_n_concordance": 0.944
+    }
+  ]
+}
