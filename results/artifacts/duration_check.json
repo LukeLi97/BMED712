@@ -1,0 +1,176 @@
+{
+  "covariate": "duration_s",
+  "n_subjects": 260,
+  "duration_medians": {
+    "healthy": 10.67,
+    "ortho": 15.83,
+    "neuro": 31.1
+  },
+  "original_significant": {
+    "p05": 182,
+    "p001": 145
+  },
+  "after_residualization": {
+    "p05": 183,
+    "p001": 142
+  },
+  "survival_rate_p05_pct": 100.5,
+  "survival_rate_p001_pct": 97.9,
+  "asymmetry_features_originally_significant": [
+    "stride_absAI",
+    "step_absAI",
+    "stride_abs_diff",
+    "step_abs_diff",
+    "stride_AI",
+    "stride_CV_l",
+    "stride_CV_r"
+  ],
+  "asymmetry_features_surviving": [
+    "step_absAI",
+    "step_abs_diff",
+    "stride_CV_r"
+  ],
+  "features_losing_significance": [
+    "HE_Acc_Y__mean",
+    "HE_FreeAcc_X__std",
+    "HE_FreeAcc_X__rms",
+    "LB_Acc_Y__mean",
+    "LB_Acc_Y__rms",
+    "LB_Gyr_Z__mean",
+    "LF_Acc_Y__dom_freq_hz",
+    "LF_FreeAcc_Y__dom_freq_hz",
+    "LF_FreeAcc_Z__mean",
+    "LF_Gyr_Y__mean",
+    "LF_Gyr_Y__dom_freq_hz",
+    "LF_Gyr_Z__mean",
+    "LF_Gyr_Z__spec_centroid_hz",
+    "RF_Gyr_Y__dom_freq_hz",
+    "RF_Gyr_Z__spec_centroid_hz",
+    "stride_absAI",
+    "stride_abs_diff",
+    "stride_AI",
+    "stride_CV_l"
+  ],
+  "top_survivors": [
+    {
+      "feature": "duration_s",
+      "direction": "\u2191 H<O<N",
+      "original_p": 1.7043844361665633e-33,
+      "residualized_p": 1.7043844361665633e-33
+    },
+    {
+      "feature": "RF_FreeAcc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 3.21613820191008e-30,
+      "residualized_p": 1.3720760514933026e-20
+    },
+    {
+      "feature": "RF_Acc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 3.21613820191008e-30,
+      "residualized_p": 1.3720760514933026e-20
+    },
+    {
+      "feature": "HE_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 2.642588308340788e-29,
+      "residualized_p": 1.4715072048128382e-19
+    },
+    {
+      "feature": "LF_Acc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 8.894338558588246e-29,
+      "residualized_p": 5.385762384498358e-19
+    },
+    {
+      "feature": "LF_FreeAcc_Z__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 8.894338558588246e-29,
+      "residualized_p": 5.385762384498358e-19
+    },
+    {
+      "feature": "LF_FreeAcc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 8.452956255815883e-27,
+      "residualized_p": 6.779784781122829e-21
+    },
+    {
+      "feature": "LF_Acc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 8.452956255815883e-27,
+      "residualized_p": 6.779784781122829e-21
+    },
+    {
+      "feature": "RF_FreeAcc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 2.0266236459594798e-26,
+      "residualized_p": 8.981013540642542e-20
+    },
+    {
+      "feature": "RF_Acc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 2.0266236459594798e-26,
+      "residualized_p": 8.981013540642542e-20
+    },
+    {
+      "feature": "LB_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2193 H>O>N",
+      "original_p": 9.907558477412905e-25,
+      "residualized_p": 7.150362365710237e-09
+    },
+    {
+      "feature": "LB_Acc_Y__spec_centroid_hz",
+      "direction": "\u2193 H>O>N",
+      "original_p": 9.907558477412905e-25,
+      "residualized_p": 7.150362365710237e-09
+    },
+    {
+      "feature": "HE_FreeAcc_X__spec_centroid_hz",
+      "direction": "\u2228 valley-ortho",
+      "original_p": 1.2219159286796665e-23,
+      "residualized_p": 4.16805238367097e-12
+    },
+    {
+      "feature": "HE_FreeAcc_Y__dom_freq_hz",
+      "direction": "\u2193 H>O>N",
+      "original_p": 2.828625157766704e-23,
+      "residualized_p": 3.022998984753408e-11
+    },
+    {
+      "feature": "LF_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 8.48290708939213e-23,
+      "residualized_p": 1.1450311494376116e-16
+    },
+    {
+      "feature": "LF_Acc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 8.48290708939213e-23,
+      "residualized_p": 1.1450311494376116e-16
+    },
+    {
+      "feature": "RF_FreeAcc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 1.7624002693170428e-22,
+      "residualized_p": 7.368369221059665e-16
+    },
+    {
+      "feature": "RF_Acc_Y__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 1.7624002693170428e-22,
+      "residualized_p": 7.368369221059665e-16
+    },
+    {
+      "feature": "HE_FreeAcc_X__dom_freq_hz",
+      "direction": "\u2228 valley-ortho",
+      "original_p": 3.623305054918389e-21,
+      "residualized_p": 9.66799771221742e-18
+    },
+    {
+      "feature": "LB_FreeAcc_X__spec_centroid_hz",
+      "direction": "\u2227 peak-ortho",
+      "original_p": 3.504241343238415e-20,
+      "residualized_p": 2.123014799638789e-14
+    }
+  ]
+}
