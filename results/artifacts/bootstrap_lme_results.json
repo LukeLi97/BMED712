@@ -1,0 +1,45 @@
+{
+  "cohens_d_stride_absAI": {
+    "observed": 0.769396732712098,
+    "ci_low": 0.5023182558909035,
+    "ci_high": 1.07250959190822,
+    "n_boot": 10000,
+    "method": "percentile"
+  },
+  "auc_stride_absAI": {
+    "observed": 0.715949119373777,
+    "ci_low": 0.6354786482677656,
+    "ci_high": 0.7923964331470243,
+    "n_boot": 10000,
+    "method": "percentile"
+  },
+  "lme_stride_AI": {
+    "n_trials": 974,
+    "n_subjects": 216,
+    "fixed_effects": {
+      "Intercept": {
+        "coef": 0.008906923491379302,
+        "pvalue": 0.00390845193884673,
+        "ci_low": 0.002856843361800909,
+        "ci_high": 0.014957003620957695
+      },
+      "C(group, Treatment('healthy'))[T.ortho]": {
+        "coef": 0.0,
+        "pvalue": 1.0,
+        "ci_low": -0.010754646575794365,
+        "ci_high": 0.010754646575794365
+      },
+      "C(group, Treatment('healthy'))[T.neuro]": {
+        "coef": -0.019027662127742942,
+        "pvalue": 3.013056878744874e-06,
+        "ci_low": -0.027013552805150623,
+        "ci_high": -0.01104177145033526
+      }
+    },
+    "random_effect_variance": 3.3440646044143345e-35,
+    "residual_variance": 0.003110827478766672,
+    "icc": 1.0749759114703887e-32,
+    "log_likelihood": 1416.4302541790776,
+    "converged": true
+  }
+}

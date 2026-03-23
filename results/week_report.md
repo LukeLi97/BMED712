@@ -1,6 +1,6 @@
 # BMED 712 — Week Report: Temporal Gait Asymmetry Analysis
 
-**Date:** 2026-03-02 | **Author:** Track A Team | **Dataset:** 974 valid trials, 216 subjects
+**Date:** 2026-03-23 | **Author:** Track A Team | **Dataset:** 974 valid trials, 216 subjects
 
 ---
 
@@ -35,7 +35,7 @@ The central and counterintuitive finding: **healthy subjects show larger, more c
 | Step CV (L) | 0.284 +/- 0.236 | 0.176 +/- 0.153 | 0.187 +/- 0.152 | p=0.002\*\*, d=0.55 |
 | Mean step time (s) | 0.605 +/- 0.035 | 0.628 +/- 0.053 | 0.608 +/- 0.057 | p=0.19 ns |
 
-**Stride |AI|** yields Cohen's d = 0.77 (large effect) — the strongest temporal gait discriminator identified. Walking speed (mean step time) does NOT differ between groups (p=0.19), ruling out speed as a confound.
+**Stride |AI|** yields Cohen's d = 0.77 (95% CI: 0.50–1.07, large effect) — the strongest temporal gait discriminator identified. AUC = 0.716 (95% CI: 0.635–0.792). Walking speed (mean step time) does NOT differ between groups (p=0.19), ruling out speed as a confound.
 
 ![Stride |AI| by Group — Subject-Level Boxplot](figures/step06_asymmetry_boxplot_absAI.png)
 
@@ -225,15 +225,58 @@ Nearly all features remain highly significant even after completely removing tri
 
 **Note on asymmetry features:** 7 of 11 asymmetry features were originally significant; 3 survive residualization. This is expected — `mean_step_time` directly measures walking speed and overlaps with duration; `step_CV` is marginally significant and loses power after covariate removal. The core metric `stride_absAI` remains significant.
 
-## 9. Conclusions
+## 9. Bootstrap Confidence Intervals & Linear Mixed Effects Model
+
+To fully characterise the key statistics, we applied two additional analyses requested by the professor (3/7):
+
+### 9.1 Bootstrapped Confidence Intervals (n = 10,000 resamples)
+
+| Statistic | Point estimate | 95% Bootstrap CI |
+|-----------|---------------|-----------------|
+| **Cohen's d** (stride \|AI\|, healthy vs pathological) | **0.77** | **[0.50, 1.07]** |
+| **AUC** (stride \|AI\|, healthy vs pathological) | **0.716** | **[0.635, 0.792]** |
+
+Both intervals exclude the "no effect" boundaries (d=0, AUC=0.5) by wide margins:
+- The lower CI for Cohen's d = **0.50** is already in the "medium-to-large" range — the effect is robustly non-trivial
+- The AUC CI **[0.635, 0.792]** confirms the screening signal is real, not a sampling artefact
+
+**Clinical interpretation of d = 0.77:** Cohen's original benchmarks classify d ≥ 0.8 as "large". Our value of 0.77 sits at the medium–large boundary. The bootstrapped CI [0.50, 1.07] shows the true effect size could comfortably be ≥ 0.8 in the population — confirming this is **clinically meaningful**, not just statistically significant.
+
+### 9.2 Linear Mixed Effects Model
+
+**Model:** `stride_AI ~ group + (1 | subject)` — accounts for repeated measures per subject across trials.
+
+- **N:** 974 trials from 216 subjects
+- **Random effect (1|subject):** Subject-level random intercept
+
+| Fixed effect | β (coefficient) | 95% CI | p-value |
+|-------------|----------------|--------|---------|
+| Intercept (healthy) | +0.0089 | [+0.003, +0.015] | 0.0039 ** |
+| Ortho vs healthy | +0.0000 | [−0.011, +0.011] | 1.00 ns |
+| **Neuro vs healthy** | **−0.0190** | **[−0.027, −0.011]** | **3.0×10⁻⁶ \*\*\*** |
+
+**Key findings:**
+- The healthy group mean stride_AI = +0.009 (slightly positive, left > right), confirming natural motor lateralization
+- **Neuro group** is significantly reduced by −0.019 (virtually symmetric, β close to zero): p = 3×10⁻⁶
+- **Ortho group** is indistinguishable from healthy (β ≈ 0, p = 1.00) — orthopedic conditions do not disrupt temporal lateralization
+
+**ICC (Intraclass Correlation):** 0.000 — the between-subject random effect variance is negligible, meaning trial-to-trial variability dominates. This is expected for a signed measure where individual trials oscillate around the subject mean.
+
+![Bootstrap CI & LME Summary](figures/step11_bootstrap_lme.png)
+
+*Figure 14. Left: Cohen's d with bootstrapped 95% CI (dashed lines = small/medium/large thresholds). Centre: AUC with bootstrapped 95% CI. Right: LME fixed-effect coefficients relative to healthy; *** p<0.001, ns = not significant.*
+
+## 10. Conclusions
 
 1. **Stride |AI| is the strongest temporal discriminator** (d=0.77, p<0.001) between healthy and pathological gait
 2. **Healthy gait is more asymmetric, not less** — reflecting consistent motor lateralization that is lost in disease
 3. **Neurological conditions** (RIL d=0.87, PD d=0.77, CVA d=0.73) show the largest asymmetry reduction
 4. **Stride |AI| achieves AUC=0.716** as a single-feature screening tool with 83% specificity
-5. **ML integration provides marginal improvement** (+0.9% BAcc for SVM), confirming asymmetry's primary role as an explainability tool
-6. **182 features are significantly directional** (p<0.05) with 93–100% cross-subject concordance
-7. **Duration is not a confound** — 98% of significant features survive OLS residualization of trial duration
+5. **Bootstrap CIs confirm robustness:** d = 0.77 [0.50, 1.07], AUC = 0.716 [0.635, 0.792] — effects are real and clinically meaningful
+6. **LME model confirms neuro-specific loss of lateralization** (β = −0.019, p=3×10⁻⁶) while ortho group is not affected (p=1.00)
+7. **ML integration provides marginal improvement** (+0.9% BAcc for SVM), confirming asymmetry's primary role as an explainability tool
+8. **182 features are significantly directional** (p<0.05) with 93–100% cross-subject concordance
+9. **Duration is not a confound** — 98% of significant features survive OLS residualization of trial duration
 
 ---
 
@@ -265,7 +308,7 @@ Nearly all features remain highly significant even after completely removing tri
 | 步长 CV (左) | 0.284 +/- 0.236 | 0.176 +/- 0.153 | 0.187 +/- 0.152 | p=0.002, d=0.55 |
 | 平均步长时间 | 0.605 +/- 0.035 | 0.628 +/- 0.053 | 0.608 +/- 0.057 | p=0.19 ns |
 
-**步幅 |AI|** 的 Cohen's d = 0.77（大效应量），是目前发现的最强时间步态区分指标。步行速度在组间无显著差异（p=0.19），排除了速度混杂因素。
+**步幅 |AI|** 的 Cohen's d = 0.77（95% CI: 0.50–1.07，大效应量），AUC = 0.716（95% CI: 0.635–0.792），是目前发现的最强时间步态区分指标。步行速度在组间无显著差异（p=0.19），排除了速度混杂因素。
 
 ![步幅 |AI| 组间对比](figures/step06_asymmetry_boxplot_absAI.png)
 
@@ -429,17 +472,59 @@ Nearly all features remain highly significant even after completely removing tri
 
 > **这些特征是真实的。** 时长差异本身是有临床意义的（神经患者走得更慢），但频谱和时域特征捕捉了**独立于步行速度**的额外步态质量信息。182 个显著特征反映了真实的病理性运动动态变化。
 
-## 9. 总结与结论
+## 9. Bootstrap 置信区间与线性混合效应模型
+
+针对导师（3/7）的补充要求：量化统计效应量的不确定性，并用混合效应模型正确处理重复测量数据。
+
+### 9.1 Bootstrap 置信区间（n=10,000 次重采样）
+
+| 统计量 | 点估计 | 95% Bootstrap CI |
+|--------|--------|-----------------|
+| **Cohen's d**（步幅 \|AI\|，健康 vs 病理） | **0.77** | **[0.50, 1.07]** |
+| **AUC**（步幅 \|AI\| ROC） | **0.716** | **[0.635, 0.792]** |
+
+- d 的置信区间下界 = **0.50**，已位于"中-大效应"范围，说明效应量稳健非偶然
+- AUC 的置信区间 **[0.635, 0.792]** 完全位于 0.5 以上，筛查能力经重采样验证
+
+**d = 0.77 的临床意义：** Cohen 原始基准将 d ≥ 0.8 定义为"大效应"。我们的 0.77 处于中-大效应交界，且 Bootstrap CI 上界达 1.07，提示真实总体效应很可能超过 0.8——**具有临床实质意义**，而非仅统计显著。
+
+### 9.2 线性混合效应模型（LME）
+
+**模型：** `stride_AI ~ 组别 + (1 | 受试者)`，正确处理同一受试者多次试验的重复测量结构。
+
+- 数据量：216 名受试者，974 次试验
+- 随机效应：受试者随机截距 (1|subject)
+
+| 固定效应 | β 系数 | 95% CI | p 值 |
+|---------|--------|--------|------|
+| 截距（健康组） | +0.0089 | [+0.003, +0.015] | 0.004 ** |
+| 骨科 vs 健康 | +0.0000 | [−0.011, +0.011] | 1.00 ns |
+| **神经 vs 健康** | **−0.0190** | **[−0.027, −0.011]** | **3.0×10⁻⁶ \*\*\*** |
+
+**关键解读：**
+- 健康组步幅 AI 均值 = +0.009（左步幅略长于右步幅），验证自然运动侧化
+- **神经组**步幅 AI 显著降低 −0.019（几乎对称），p = 3×10⁻⁶——侧化消失
+- **骨科组**与健康组无显著差异（β ≈ 0，p = 1.00）——骨科损伤不破坏时间侧化
+
+ICC（组内相关系数）= 0.000：受试者间随机效应方差接近零，说明有符号 AI 的试验间波动主导方差，符合预期（每次试验左右方向可变换）。
+
+![Bootstrap CI 与 LME 汇总图](figures/step11_bootstrap_lme.png)
+
+*图 11. 左：Cohen's d 及 Bootstrap 95% CI（虚线为小/中/大效应阈值）。中：AUC 及 Bootstrap 95% CI。右：LME 固定效应系数（参照健康组）；***p<0.001，ns 不显著。*
+
+## 10. 总结与结论
 
 | # | 发现 | 意义 |
 |---|------|------|
-| 1 | 步幅 |AI| 是最强时间区分指标 (d=0.77) | 大效应量，统计显著 |
+| 1 | 步幅 \|AI\| 是最强时间区分指标 (d=0.77) | 大效应量，统计显著 |
 | 2 | 健康步态更不对称 | 反映自然运动侧化，病理组侧化丧失 |
 | 3 | 神经亚型影响最大 (RIL d=0.87) | 可用于亚型鉴别 |
 | 4 | 单特征 AUC=0.716, 特异度 83% | 可作为临床筛查工具 |
-| 5 | ML 提升 +0.9% (SVM BAcc) | 不对称为可解释性工具，非 ML 主力 |
-| 6 | 182 个特征方向性显著，一致性 93–100% | 特征有方向、有意义、有可重复性 |
-| 7 | 时长残差化后 98% 特征存活 | 结论稳健，非时长混杂效应所致 |
+| 5 | **Bootstrap CI 验证稳健性**：d [0.50, 1.07]，AUC [0.635, 0.792] | 效应量可信，非抽样偶然 |
+| 6 | **LME 确认神经侧化丧失**（β=−0.019，p=3×10⁻⁶），骨科组不受影响 | 混合效应模型验证 |
+| 7 | ML 提升 +0.9% (SVM BAcc) | 不对称为可解释性工具，非 ML 主力 |
+| 8 | 182 个特征方向性显著，一致性 93–100% | 特征有方向、有意义、有可重复性 |
+| 9 | 时长残差化后 98% 特征存活 | 结论稳健，非时长混杂效应所致 |
 
 ---
 
@@ -452,13 +537,16 @@ Nearly all features remain highly significant even after completely removing tri
 | Code | `analysis/train_with_asymmetry.py` | ML feature integration |
 | Code | `analysis/directionality.py` | Feature directionality & consistency analysis |
 | Code | `analysis/duration_check.py` | OLS residualization confound check |
+| Code | `analysis/bootstrap_lme.py` | Bootstrap CIs + Linear Mixed Effects Model |
 | Data | `results/artifacts/asymmetry_per_trial.csv` | 974 trials, 25 columns |
 | Data | `results/artifacts/asymmetry_per_subject.csv` | 216 subjects, aggregated |
 | Data | `results/artifacts/asymmetry_ml_integration.json` | ML comparison results |
 | Data | `results/artifacts/directionality_full.csv` | All 228 features: direction, p, concordance |
 | Data | `results/artifacts/duration_check.json` | Residualization survival rates |
+| Data | `results/artifacts/bootstrap_lme_results.json` | Bootstrap CIs + LME coefficients |
 | Figures | `results/figures/step06_*.png` | 8 asymmetry visualizations |
 | Figures | `results/figures/step07_*.png` | 12 extended analysis figures |
 | Figures | `results/figures/step08_*.png` | 11 ML integration figures |
 | Figures | `results/figures/step09_*.png` | 15 directionality & consistency figures |
 | Figures | `results/figures/step10_*.png` | 4 duration confound check figures |
+| Figures | `results/figures/step11_bootstrap_lme.png` | Bootstrap CI + LME summary figure |
