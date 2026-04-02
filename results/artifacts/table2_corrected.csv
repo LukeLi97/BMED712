@@ -1,0 +1,8 @@
+Subtype,Category,Stride |AI|,d vs Healthy,p-value
+RIL,Neurological,0.024,-0.87,<0.001***
+PD,Neurological,0.025,-0.77,<0.001***
+CVA†,Neurological,0.027,-0.73,<0.001***
+CIPN,Neurological,0.033,-0.53,0.003**
+KOA,Orthopaedic,0.036,-0.45,0.034*
+HOA†,Orthopaedic,0.042,-0.27,0.226 ns
+ACL,Orthopaedic,0.049,-0.09,0.779 ns
