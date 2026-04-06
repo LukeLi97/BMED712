@@ -1,187 +1,193 @@
-# BMED 712 — Track A | Week 3 Progress Report
-**Date:** 2026-04-02
-**Team:** [Track A]
-**Period covered:** Week 3 (post-first submission, revisions + new analyses)
+# BMED 712 — Track A | Week 3 Report
+**Date:** 2026-04-06
+**Team:** Fatima Habib Farweh, Liang Li, Yasmine Khattab, Zehara Ali
+**Period:** Week 3 (post-submission — revision, debugging, retraining)
 
 ---
 
-## 1. This Week's Objectives
+## 1. Summary of Completed Tasks
 
 | # | Task | Status |
 |---|------|--------|
-| 1 | Address all 6 items of professor's feedback on Progress Report | ✅ Done |
-| 2 | Fix Fig 7 (VGA–Asymmetry): remove regression line, add boxplots | ✅ Done |
-| 3 | Fix Table II: apply signed Cohen's d (pathological − healthy) | ✅ Done |
-| 4 | New analysis: phase-specific asymmetry (pre/during/post U-turn) | ✅ Done |
-| 5 | New analysis: step-level gait variability | ✅ Done |
-| 6 | New analysis: VGA ordinal correlation (Spearman) | ✅ Done |
-| 7 | Slide deck for asymmetry analysis (team presentation) | ✅ Done |
-| 8 | Revised Progress Report PDF | ✅ Done |
+| 1 | Address all 6 professor feedback items on Progress Report | ✅ |
+| 2 | Identify and document feature extraction bug | ✅ |
+| 3 | Validate teammate's corrected frequency-sheet features (300k windows) | ✅ |
+| 4 | Retrain 3-class models (SVM / XGBoost / RF) with corrected features | ✅ |
+| 5 | First-ever 8-class (subtype-level) classification experiment | ✅ |
+| 6 | Sensor ablation with new features | ✅ |
+| 7 | Phase-specific asymmetry analysis (pre / during / post U-turn) | ✅ |
+| 8 | VGA–IMU ordinal correlation analysis | ✅ |
+| 9 | Expanded feature experiment (derived proxy features) | ✅ |
+| 10 | Revised Progress Report PDF | ✅ |
 
 ---
 
-## 2. Addressing Professor's Feedback
+## 2. Feature Extraction Bug — Root Cause Analysis
 
-### 2.1 Language & Tone (Feedback #1)
-- Replaced "robust biomarkers" → "potential indicators"
-- Replaced "clinical deployment" → "suggests potential for clinical application"
-- Hedged all outcome claims with "suggests," "indicates," "may"
-- Replaced "confirms" and "demonstrates" with "is consistent with" where appropriate
+During the 8-class analysis attempt, we discovered the original `master_features.csv` was generated with two compounding errors:
 
-### 2.2 Narrative Streamlining (Feedback #2)
-- Abstract rewritten with two explicit contributions upfront:
-  1. Characterize stride and step asymmetry across neurological and orthopedic subtypes
-  2. Evaluate IMU sensor placement trade-offs for gait classification
-- Discussion trimmed to 3 focused paragraphs; removed redundant method re-description
+### Bug 1 — Missing Acc channel
+The extraction pipeline iterated over `FreeAcc` and `Gyr` signals only, **silently skipping the raw `Acc` channel**. Each of the 4 IMUs provides 3 signal types (Acc, FreeAcc, Gyr) × 3 axes, so 1/3 of available signals were never processed. The resulting file had 168 features instead of the expected 216+.
 
-### 2.3 ML Framing (Feedback #3)
-- Accuracy gain (71.6% → 74.2%) now framed as "modest" in both Abstract and Discussion
-- Added sentence: "The primary contribution is clinical insight into asymmetry patterns, not incremental model performance."
-- AUC 0.716 [95% CI 0.635–0.792] retained with bootstrap CI for transparency
+### Bug 2 — Trial-level aggregation
+The old code averaged all time windows within each trial into a single row before saving, producing exactly 1,356 rows (one per trial). This collapsed within-trial temporal variability — a critical source of discriminative information for gait classification.
 
-### 2.4 Sensor Ablation Key Takeaway (Feedback #4)
-- Added explicit summary box in sensor ablation section:
-  > **Key finding:** Foot-only sensors (LF+RF) retain 93% of full-sensor balanced accuracy (68.2% vs 73.4%), suggesting a practical two-sensor wearable configuration for clinical use.
-- Table S1 columns reordered: All → Feet → LF → RF → LB → HE
+### Bug 3 — No subtype label
+The original CSV contained only a 3-class `label` column (Healthy / Neuro / Ortho). The 8-class `cohort` column (HS / PD / CVA / RIL / CIPN / KOA / HOA / ACL) was never written, making subtype analysis impossible.
 
-### 2.5 Figure 7 — VGA Ordinal Scale (Feedback #5)
-- **Problem:** VGA is an ordinal scale (0–4); OLS regression line is inappropriate
-- **Fix:** Removed regression line; added Spearman ρ = −0.206 annotation
-- **Added:** Panel B — per-VGA-category boxplots (VGA rounded to 0.5 bins, n labeled per box)
-- Caption updated: "Linear regression not shown; VGA is an ordinal variable. Spearman ρ = −0.206, p < 0.001, n = 927."
-- Output: `results/figures/step07_corr_vga_stride_absAI_fixed.png`
-
-### 2.6 Table II — Signed Cohen's d (Feedback #6)
-- **Problem:** All d values were unsigned (positive); correct convention is d = (pathological − healthy) / pooled SD
-- **Fix:** All pathological groups show negative d (their |AI| is lower than healthy controls)
-- Corrected values:
-
-| Subtype | Category | Stride |AI| | d vs Healthy | p-value |
-|---------|----------|-------------|--------------|---------|
-| RIL | Neurological | 0.024 | **−0.87** | <0.001*** |
-| PD | Neurological | 0.025 | **−0.77** | <0.001*** |
-| CVA† | Neurological | 0.027 | **−0.73** | <0.001*** |
-| CIPN | Neurological | 0.033 | **−0.53** | 0.003** |
-| KOA | Orthopaedic | 0.036 | **−0.45** | 0.034* |
-| HOA† | Orthopaedic | 0.042 | **−0.27** | 0.226 ns |
-| ACL | Orthopaedic | 0.049 | **−0.09** | 0.779 ns |
-
-†Small cell, bootstrap CI reported. Effect size interpretation: |d| ≥ 0.8 large, 0.5–0.8 medium, 0.2–0.5 small.
+### Resolution
+Teammate Fatemah re-extracted features from scratch with corrected code, producing the `frequency sheets/` dataset:
+- **All 3 channels** included (Acc + FreeAcc + Gyr)
+- **Window-level rows** (300,991 windows across 4 phases × 12 window/overlap configs)
+- **Both 3-class and 8-class labels** present
+- **216 features** per window (4 sensors × 3 channels × 3 axes × 6 feature types)
+- Missing-value rate: < 0.12% (LF channel only, minor)
 
 ---
 
-## 3. New Analyses This Week
+## 3. ML Results — Corrected Features
 
-### 3.1 Phase-Specific Asymmetry
-**Script:** `analysis/phase_asymmetry.py`
-**Output:** `results/artifacts/phase_asymmetry_results.csv` (2,975 rows)
+### 3.1 Three-class classification (healthy / neuro / ortho)
 
-Three gait phases were extracted from each trial:
-- **Pre-U-turn** (approach corridor)
-- **U-turn** (direction reversal)
-- **Post-U-turn** (return corridor)
+| Phase | Window | Overlap | Best Model | BAcc | F1 | Δ vs Old |
+|-------|--------|---------|------------|------|-----|----------|
+| post_uturn | 5 s | 50% | XGBoost | **79.2%** | 80.4% | **+7.6%** |
+| pre_uturn | 5 s | 50% | XGBoost | 76.7% | 76.2% | +5.1% |
+| full_gait | 3 s | 50% | XGBoost | 76.1% | 75.9% | +4.5% |
+| full_gait | 5 s | 50% | SVM | 75.8% | 75.0% | +4.2% |
+| uturn | 1 s | 50% | SVM | 76.5% | 75.3% | +4.9% |
 
-**Key findings** (Kruskal-Wallis across groups per phase):
+Old best (with buggy features): BAcc = 71.6%.
 
-| Phase | H-statistic | p-value | Significant? |
-|-------|-------------|---------|--------------|
-| Pre-U-turn | — | **0.026** | ✅ Yes |
-| U-turn | — | 0.142 | ❌ No |
-| Post-U-turn | — | 0.312 | ❌ No |
+### 3.2 Eight-class classification (subtype-level) — NEW
 
-**Interpretation:** Group differences in stride asymmetry are most pronounced during the pre-U-turn approach phase. The U-turn and post-U-turn phases show no significant difference, possibly because compensatory strategies converge across all groups under the physical constraint of turning.
+| Phase | Model | BAcc | F1 | Note |
+|-------|-------|------|-----|------|
+| full_gait 5s/50% | SVM | **41.5%** | 35.9% | Chance = 12.5% |
+| pre_uturn 5s/50% | SVM | 41.0% | 36.9% | |
+| post_uturn 6s/50% | SVM | 39.9% | 35.2% | |
 
-**Clinical relevance:** Straight-line walking captures the primary signal; turn-based asymmetry may not add discriminatory value in this dataset.
+8-class is a challenging task (8 classes, imbalanced: RIL has 5,066 windows vs ACL only 478). BAcc of 41.5% is **3.3× chance level**, confirming that IMU features carry subtype-discriminative signal.
 
-### 3.2 Gait Variability
-**Script:** `analysis/gait_variability.py`
+### 3.3 Sensor ablation (full_gait 5s/50%, 3-class)
 
-Step-to-step variability (CV of step intervals) was computed per trial and compared across groups.
+| Sensor Set | SVM | XGBoost | RF |
+|------------|-----|---------|-----|
+| All (HE+LB+LF+RF) | 75.8% | 75.7% | 75.3% |
+| HE+LB | 72.9% | **75.1%** | 73.5% |
+| **HE only** | **72.7%** | **74.0%** | **73.2%** |
+| Feet (LF+RF) | 70.4% | 69.5% | 67.1% |
+| RF only | 67.5% | 67.9% | 63.7% |
+| LB only | 71.0% | 69.4% | 64.8% |
 
-**Key findings:**
-- Neurological group shows elevated step-interval CV relative to healthy and orthopedic
-- VGA score correlates with stride |AI|: Spearman ρ = −0.206, p < 0.001, n = 927 trials
-- VGA correlation is **weak-to-moderate** (r² ≈ 0.042 → VGA explains ~4% of variance in stride |AI|)
+**Key surprise:** HE (head) sensor alone achieves 74.0% BAcc with XGBoost — retaining **97.8%** of full-sensor performance. This contrasts with prior results where RF (right foot) was dominant. The head IMU captures whole-body gait rhythm and vertical oscillation, apparently sufficient for 3-class separation.
 
-**Clinical relevance:** VGA is a coarse clinical rating; IMU-derived |AI| captures finer-grained asymmetry than visual inspection alone.
+### 3.4 Expanded feature experiment
 
-### 3.3 VGA–Asymmetry Ordinal Analysis
-**Figures:**
-- `results/figures/step07_corr_vga_stride_absAI_fixed.png` (scatter + VGA-category boxplots)
-- `results/figures/step08_vga_variability_scatter.png`
-
-Panel B (boxplots) shows median stride |AI| increases monotonically with VGA category 0→3, consistent with VGA capturing the direction (more impairment → more asymmetry) but not magnitude sensitively.
-
----
-
-## 4. Key Takeaways for Next Class
-
-1. **Asymmetry biomarker validity:** Neurological subtypes (RIL, PD) show large negative Cohen's d (−0.87, −0.77), confirming significant asymmetry reduction vs. healthy. Orthopaedic subtypes show smaller effects, with ACL non-significant.
-
-2. **Phase specificity:** Pre-U-turn phase drives most of the group-discriminating signal. Extracting features from straight-corridor walking only may be sufficient and simpler.
-
-3. **Sensor efficiency:** Foot-only sensors retain 93% accuracy — clinically actionable for a minimal wearable.
-
-4. **VGA–IMU gap:** VGA explains only ~4% of IMU asymmetry variance. IMU provides information beyond clinical visual rating.
-
-5. **ML framing:** AUC = 0.716 is modest but above chance. Our contribution is the *asymmetry characterization*, not best-in-class classification.
+Added 5 derived features per sensor-channel-axis (energy, DC ratio, relative variability, spectral complexity, normalized spectral power) → 216 → 396 features. **Result: no improvement** (SVM 73.9% vs 75.8% original). The proxy features are mathematically correlated with existing stats (e.g., energy ≈ rms²). This confirms the original 216-feature set is already well-designed; raw signal access would be needed for genuinely new features (kurtosis, ZCR, etc.).
 
 ---
 
-## 5. Next Steps (Proposed for Week 4)
+## 4. Professor's Feedback — All 6 Items Addressed
 
-- [ ] Discuss with professor: is deeper per-subtype classification (7-class) worth pursuing?
-- [ ] Incorporate phase-asymmetry features into ML feature set; re-run CV to see if phase features improve AUC
-- [ ] Test LME model with VGA as covariate: does VGA add predictive information beyond group label?
-- [ ] Prepare for final report structure planning
+| # | Feedback | Fix Applied |
+|---|----------|-------------|
+| 1 | Tone down "robust biomarkers" / "clinical deployment" | → "potential indicators", "suggests possible clinical application" |
+| 2 | Streamline narrative, foreground contributions | Abstract rewritten with 2 explicit contributions; Discussion trimmed to 3 paragraphs |
+| 3 | ML improvement is small — emphasize clinical insight | AUC 0.716 labeled "modest"; added: "primary contribution is clinical characterization, not model performance" |
+| 4 | Sensor ablation needs sharper key-takeaway | Added highlighted key-finding box: "Foot-only retains 93% BAcc" |
+| 5 | Fig 7: r=−0.206 is weak; remove regression line (VGA is ordinal) | Regression line removed; Spearman ρ annotated; added per-VGA boxplots (Panel B) |
+| 6 | Table II: RIL should be negative d=−0.87 | All Cohen's d now signed (pathological − healthy); all negative: RIL −0.87, PD −0.77, … ACL −0.09 |
 
 ---
 
-## 6. Files Updated This Week
+## 5. Key Insights This Week
+
+1. **Feature extraction matters more than model tuning.** Fixing the missing Acc channel and using window-level data improved BAcc by +7.6% — more than any hyperparameter search could achieve.
+
+2. **Head sensor is underrated.** HE alone (74.0%) nearly matches all 4 sensors (75.7%). A single head-mounted IMU could be a practical clinical screening device — simpler than bilateral foot sensors.
+
+3. **Subtype discrimination is feasible.** 8-class BAcc of 41.5% (vs 12.5% chance) shows that IMU features carry subtype-specific signatures, even with the current feature set. With raw-signal features (kurtosis, ZCR, wavelet coefficients), this could improve further.
+
+4. **Straight-line walking carries the signal.** Pre-U-turn phase shows significant group differences (p = 0.026); U-turn and post-U-turn do not. Yet the ML model performs best on post_uturn (79.2%) — suggesting the return corridor has cleaner signal after the turn "normalizes" initial gait variability.
+
+5. **VGA is a coarse proxy.** Spearman ρ = −0.206 means VGA explains only ~4% of IMU asymmetry variance. IMU captures information invisible to clinical visual assessment.
+
+---
+
+## 6. Proposed Next Steps (Week 4)
+
+- [ ] Access raw IMU signals to compute genuinely new features (kurtosis, skewness, zero-crossing rate, wavelet energy)
+- [ ] Re-run 8-class with SMOTE or class-weighted loss to address RIL/ACL imbalance
+- [ ] Phase-feature fusion: concatenate pre_uturn + post_uturn features per trial
+- [ ] Discuss with professor: is head-sensor-only IMU a publishable finding?
+- [ ] Begin final report structure planning
+
+---
+
+## 7. Files Delivered This Week
 
 | File | Description |
 |------|-------------|
-| `analysis/fix_fig7_table2.py` | Generates corrected Fig 7 and signed Table II |
-| `analysis/phase_asymmetry.py` | Phase-specific asymmetry extraction and stats |
-| `analysis/gait_variability.py` | Step variability and VGA–IMU correlation |
-| `analysis/make_asymmetry_slides.py` | 7-slide python-pptx deck for team use |
-| `results/figures/step07_corr_vga_stride_absAI_fixed.png` | Corrected Fig 7 (no regression line) |
-| `results/artifacts/table2_corrected.csv` | Signed Cohen's d values |
-| `results/artifacts/phase_asymmetry_results.csv` | Phase-specific asymmetry stats |
-| `results/asymmetry_analysis_slides.pptx` | Team slide deck |
-| `results/week_report_new_analyses.md` | Standalone bilingual analysis report |
-| `Progress_Report_Revised.pdf` | Revised Progress Report (this file) |
+| `analysis/validate_new_features.py` | Feature validation (300k windows, distributions, missing values) |
+| `analysis/train_new_features.py` | 3-class, 8-class, sensor ablation with new features |
+| `analysis/expand_features.py` | Expanded feature experiment (proxy derived features) |
+| `analysis/fix_fig7_table2.py` | Corrected Fig 7 (no regression line) + signed Table II |
+| `results/ml_new_features/` | All ML result CSVs and summary plots |
+| `results/validation/` | Feature validation outputs (heatmaps, KDE plots, coverage table) |
+| `results/Progress_Report_Revised.pdf` | Full revised report addressing all professor feedback |
 
 ---
 
-*Report prepared by: Track A Team | BMED 712 Spring 2026*
-
----
 ---
 
-# 第三周进展报告（中文摘要）
+# 第三周进展报告（中文版）
 
-## 本周完成工作
+## 一、核心发现：特征提取 Bug 分析
 
-**1. 响应导师反馈（6条）**
-- **语气软化：** 将"robust biomarkers"改为"potential indicators"，"clinical deployment"改为"suggests potential for clinical application"
-- **叙事精简：** 摘要重写，明确两个主要贡献；讨论部分压缩至3段
-- **ML贡献重新定位：** 强调临床洞见而非模型精度提升（AUC 0.716为中等水平，非突破性进展）
-- **传感器消融关键结论：** 明确指出仅足部传感器（LF+RF）保留93%精度，具临床可行性
-- **图7修正：** VGA为序数尺度，不适合线性回归；改为Spearman相关 + 分类箱线图
-- **表II修正：** Cohen's d改为有符号（病理组−健康组），所有病理亚型d为负值
+旧版 `master_features.csv` 存在两个复合错误：
 
-**2. 新分析**
-- **步态阶段特异性分析：** 转弯前阶段(p=0.026)显著，转弯中/后不显著 → 直线行走段携带主要分辨信息
-- **步态变异性分析：** 神经组步伐间隔CV高于其他组
-- **VGA–IMU相关：** Spearman ρ = −0.206, p<0.001；VGA仅解释~4%的IMU不对称性方差，说明IMU提供了视觉评估之外的信息
+**错误1 — Acc 通道缺失：** 旧代码只处理了 FreeAcc（去重力加速度）和 Gyr（陀螺仪），**完全跳过了原始 Acc（含重力加速度）通道**。每个 IMU 有 3 种信号 × 3 轴，旧版丢失了 1/3 的信号源。最终只有 168 个特征，而非应有的 216 个。
 
-**3. 提交物**
-- 修订版Progress Report PDF（已纳入全部导师意见）
-- 7张幻灯片演示文稿（团队汇报用）
-- 本周进展报告
+**错误2 — 聚合粒度错误：** 旧代码在保存前将每个 trial 内的所有窗口取均值，生成 1,356 行（每 trial 一行）。这丢失了 trial 内的时间变异性信息——而这恰恰是步态分类的重要判据。
 
-## 下周计划
-- 讨论7分类（亚型级别）分类的可行性
-- 将步态阶段特征加入ML特征集，验证是否提升AUC
-- 测试包含VGA协变量的线性混合效应模型
+**错误3 — 无亚型标签：** 旧文件只有 3 类标签（Healthy/Neuro/Ortho），缺少 8 类 cohort 标签，无法进行亚型分析。
+
+**修复：** 同学 Fatemah 使用修正后的代码重新提取了全部特征（`frequency sheets/`），包含全部 3 通道、窗口级数据、3 类 + 8 类标签，共 300,991 个窗口。
+
+## 二、修正后 ML 结果
+
+| 实验 | 最佳模型 | BAcc | 对比旧版 |
+|------|---------|------|---------|
+| 3类（post_uturn 5s/50%） | XGBoost | **79.2%** | +7.6% |
+| 3类（full_gait 5s/50%） | SVM | 75.8% | +4.2% |
+| 8类（full_gait 5s/50%） | SVM | **41.5%** | 新实验（随机12.5%） |
+
+**传感器消融新发现：** 头部（HE）单传感器 XGBoost 达到 74.0% BAcc，接近全部 4 传感器的 75.7%。这出乎意料——头部 IMU 可能是最实用的单传感器临床方案。
+
+**扩展特征实验：** 添加 energy/dc_ratio 等 5 种派生特征后无提升（396 个特征 vs 原 216 个），因为这些是已有统计量的数学变换，高度相关。需要访问原始信号才能提取真正新的特征（峰度、过零率、小波能量等）。
+
+## 三、导师反馈——全部 6 条已回应
+
+1. 语气软化 ✅（"robust biomarkers" → "potential indicators"）
+2. 叙事精简 ✅（摘要重写，贡献前置）
+3. ML 定位调整 ✅（AUC 0.716 标注"modest"，强调临床洞见而非模型性能）
+4. 传感器消融关键结论 ✅（突出 foot-only 保留 93% 精度）
+5. 图7修正 ✅（删除回归线，VGA 为序数变量，改用 Spearman + 箱线图）
+6. 表II修正 ✅（Cohen's d 全部改为负值，d = 病理组 − 健康组）
+
+## 四、本周关键洞见
+
+1. **特征工程 > 模型调参**：修复 Acc 通道缺失 + 使用窗口级数据带来 +7.6% BAcc 提升，远超任何超参搜索效果。
+2. **头部传感器被低估**：HE 单传感器（74.0%）几乎匹配全部 4 传感器（75.7%），这是此前文献中未充分强调的发现。
+3. **亚型分类可行**：8 类 BAcc 41.5%（随机 12.5%）证明 IMU 特征携带亚型特异性信号。
+4. **直线行走 ≈ 主要信号源**：pre-U-turn 阶段 p=0.026 显著；但 ML 在 post-uturn 表现最佳（79.2%），可能因返程步态更稳定、信噪比更高。
+5. **VGA 是粗糙代理**：Spearman ρ = −0.206，VGA 仅解释 ~4% 的 IMU 不对称性方差。
+
+## 五、下周计划
+
+- 获取原始 IMU 信号，提取峰度/过零率/小波能量等新特征
+- 8 类分类使用 SMOTE 或类别加权损失缓解不平衡
+- 尝试 pre_uturn + post_uturn 阶段特征融合
+- 与导师讨论：头部单传感器发现是否可作为可发表亮点
+- 开始规划 final report 结构
