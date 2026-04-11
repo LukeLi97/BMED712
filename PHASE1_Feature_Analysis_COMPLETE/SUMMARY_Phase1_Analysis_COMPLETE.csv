@@ -1,0 +1,13 @@
+config,overlap,n_features,n_significant,top_feature,top_eta_squared
+Full_Gait_6s,0,216,198,HE_FreeAcc_X_dom_freq,0.292604
+Full_Gait_6s,25,216,200,HE_FreeAcc_X_dom_freq,0.285519
+Full_Gait_6s,50,216,203,HE_FreeAcc_X_dom_freq,0.302553
+PreUTurn_3s,0,216,199,HE_FreeAcc_X_dom_freq,0.236657
+PreUTurn_3s,25,216,197,HE_FreeAcc_X_dom_freq,0.245642
+PreUTurn_3s,50,216,198,HE_FreeAcc_X_dom_freq,0.262000
+UTurn_3s,0,216,122,HE_FreeAcc_X_dom_freq,0.259839
+UTurn_3s,25,216,133,HE_FreeAcc_X_dom_freq,0.256881
+UTurn_3s,50,216,140,HE_FreeAcc_X_spec_power,0.250108
+Post_UTurn_6s,0,216,188,HE_FreeAcc_Y_dom_freq,0.308710
+Post_UTurn_6s,25,216,189,HE_FreeAcc_Y_dom_freq,0.292793
+Post_UTurn_6s,50,216,195,HE_FreeAcc_Y_dom_freq,0.271340

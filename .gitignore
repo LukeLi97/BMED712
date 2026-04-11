@@ -37,3 +37,21 @@ dataset/data/**
 !dataset/data/sample/**
 !dataset/quick_start/**
 
+# Large data files — frequency sheets (~1.1 GB)
+frequency sheets/
+
+# Large project subfolder data
+BMED712 Project 1_Track A/dataset/
+BMED712 Project 1_Track A/dataset.zip
+BMED712 Project 1_Track A/share/
+BMED712 Project 1_Track A/results_ov0/
+BMED712 Project 1_Track A/results_small/
+
+# Large PHASE1 correlation CSVs (full 216x216 matrices)
+PHASE1_Feature_Analysis_COMPLETE/*/correlations_*.csv
+
+# Large result CSVs already on remote via LFS
+BMED712 Project 1_Track A/results/windows/
+BMED712 Project 1_Track A/results/windows_freq/
+BMED712 Project 1_Track A/results/features_*.csv
+
