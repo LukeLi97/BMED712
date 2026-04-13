@@ -418,12 +418,12 @@ const doc = new Document({
         para("SHAP analysis on Random Forest reveals that head-sensor features dominate: HE_FreeAcc_X_dom_freq (\u03b7\u00b2 = 0.303), HE_FreeAcc_Y_dom_freq (\u03b7\u00b2 = 0.246), followed by foot spectral centroid features. Head motion integrates whole-body gait dynamics, making it an efficient single-point measurement [7]."),
       ],
     },
-    // ═══ FULL-WIDTH: Sensor contribution + Boxplots ═══
+    // ═══ FULL-WIDTH: Feature Correlation Heatmap ═══
     {
       properties: { ...singleColProps, type: SectionType.CONTINUOUS },
       children: [
-        ...loadImg("PHASE1_Feature_Analysis_COMPLETE/Full_Gait_6s_ov50/sensor_contribution_Full_Gait_6s_ov50.png", 440, 465),
-        figCaption(7, "Sensor contribution analysis (Kruskal\u2013Wallis \u03b7\u00b2). HE features consistently show higher discriminative power across signal types."),
+        ...loadImg("PHASE1_Feature_Analysis_COMPLETE/Full_Gait_6s_ov50/correlation_heatmap_Full_Gait_6s_ov50.png", 480, 428),
+        figCaption(7, "Pearson correlation matrix of top 50 features (Full Gait 6s, 50% overlap). Highly correlated feature clusters indicate redundancy across sensor\u2013axis combinations, motivating feature selection."),
       ],
     },
     // ═══ TWO-COLUMN: Discussion, Limitations, Conclusion, References ═══
